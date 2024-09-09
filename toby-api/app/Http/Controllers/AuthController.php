@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
@@ -32,7 +33,7 @@ class AuthController extends Controller
     {
         $data = $request->validate([
             'email' => ['required', 'string', 'email', 'max:255'],
-            'password' => ['required', 'string', 'min:8'],
+            'password' => ['required', 'string', 'min:4'],
         ]);
 
         $user = User::where('email', $data['email'])->first();
@@ -51,5 +52,10 @@ class AuthController extends Controller
             'access_token' => $token,
             'token_type' => 'Bearer',
         ]);
+    }
+
+    public function test()
+    {
+        return Auth::user();
     }
 }

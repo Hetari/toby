@@ -8,6 +8,10 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-// Define your routes
+// Auth
 Route::post("/register", [AuthController::class, 'register'])->name("register");
 Route::post("/login", [AuthController::class, 'login'])->name("login");
+
+Route::middleware(['isAuthenticated'])->group(function () {
+    Route::post("/test", [AuthController::class, 'test'])->name("test");
+});
