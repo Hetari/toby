@@ -9,9 +9,9 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 // Auth
-Route::post("/register", [AuthController::class, 'register'])->name("register");
-Route::post("/login", [AuthController::class, 'login'])->name("login");
+require base_path('routes/authRoutes.php');
+
 
 Route::middleware(['isAuthenticated'])->group(function () {
-    Route::post("/test", [AuthController::class, 'test'])->name("test");
+    // collections api
 });
