@@ -1,10 +1,10 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\tagController;
+use App\Http\Controllers\TagController;
 
-Route::get('/tags', [tagController::class, 'index']);
-Route::get('/tags/{id}', [tagController::class, 'index']);
-Route::post('/tags', [tagController::class, 'store']);
-Route::put('/tags/{id}', [tagController::class, 'update']);
-Route::delete('/tags/{id}', [tagController::class, 'destroy']);
+Route::get('/tags', [TagController::class, 'index']);
+Route::get('/tags/{id}', [TagController::class, 'index']);
+Route::post('/tags', [TagController::class, 'store']);
+Route::put('/tags/{id}', [TagController::class, 'update']);
+Route::delete('/tags/{id}', [TagController::class, 'destroy']);
