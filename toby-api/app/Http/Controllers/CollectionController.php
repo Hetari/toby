@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class CollectionController extends Controller
 {
-    // Get all collections or by ID
+    // Get all collections
     public function index(Request $request, $id = null)
     {
         try {

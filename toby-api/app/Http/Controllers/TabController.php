@@ -6,6 +6,7 @@ use App\Models\Tab;
 use App\Models\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class TabController extends Controller
@@ -48,19 +49,20 @@ class TabController extends Controller
         }
     }
 
-    // Get All Tabs
-    public function index(Request $request)
+    // Get All Tabs, or a Single Tab by ID
+    public function index(Request $request, $id = null)
     {
         try {
             $tabs = Tab::with('collection')
-                ->whereHas('collection', function ($query) use ($request) {
-                    $query->where('user_id', $request->user()->id);
+                ->where('user_id', Auth::id())
+                ->when($id, function ($query, $id) {
+                    return $query->where('id', $id);
                 })
                 ->get();
 
             return response()->json([
                 'success' => true,
-                'message' => 'OK',
+                'message' => 'Tabs retrieved',
                 'data' => $tabs,
             ], Response::HTTP_OK);
         } catch (\Exception $e) {
@@ -70,6 +72,7 @@ class TabController extends Controller
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+
 
     // Delete a Tab
     public function destroy($id)

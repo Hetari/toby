@@ -45,12 +45,15 @@ class TagController extends Controller
         }
     }
 
-    // Get All Tags
-    public function index(Request $request)
+    // Get All Tags, on a Collection by ID
+    public function index(Request $request, $id = null)
     {
         try {
             $tags = Tag::with('collections')
                 ->where('user_id', $request->user()->id)
+                ->when($id, function ($query) use ($id) {
+                    return $query->where('id', $id);
+                })
                 ->get();
 
             return response()->json([
