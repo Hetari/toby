@@ -13,5 +13,7 @@ require base_path('routes/authRoutes.php');
 
 
 Route::middleware(['isAuthenticated'])->group(function () {
-    // collections api
+    require base_path('routes/tabRoutes.php');
+    require base_path('routes/collectionRoutes.php');
+    require base_path('routes/tagRoutes.php');
 });
