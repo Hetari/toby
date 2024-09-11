@@ -36,15 +36,6 @@ class CollectionController extends Controller
         }
     }
 
-    public function show()
-    {
-        return response()->json([
-            'success' => true,
-            'message' => 'Collections retrieved',
-            'data' => Collection::with('tags')->where('user_id', Auth::id())->get(),
-        ]);
-    }
-
     // Store a new collection
     public function store(Request $request)
     {
@@ -53,6 +44,7 @@ class CollectionController extends Controller
             'title' => 'required|string|max:255',
             'isStared' => 'nullable|boolean',
             'tagId' => 'nullable|exists:tags,id',
+            'description' => 'nullable|string',
         ]);
 
         if ($validator->fails()) {
@@ -68,6 +60,7 @@ class CollectionController extends Controller
             $collection = Collection::create([
                 'title' => $request->title,
                 'is_stared' => $request->isStared ?? false,
+                'description' => $request->description ?? null,
                 'user_id' => Auth::id(),
             ]);
 
@@ -97,6 +90,8 @@ class CollectionController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|max:255',
+            'tagId' => 'nullable|exists:tags,id',
+            'description' => 'nullable|string',
             'isStared' => 'nullable|boolean',
         ]);
 
@@ -121,6 +116,8 @@ class CollectionController extends Controller
             $collection->update([
                 'title' => $request->title,
                 'is_stared' => $request->isStared ?? $collection->is_stared,
+                'description' => $request->description ?? $collection->description,
+                'tag_id' => $request->tagId ?? $collection->tag_id,
             ]);
 
             return response()->json([
