@@ -9,10 +9,11 @@ class Tag extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'user_id'];
+    protected $fillable = ['title', 'user_id', 'collection_id'];
 
+    // Many-to-Many relationship with Collection
     public function collections()
     {
-        return $this->belongsToMany(Collection::class);
+        return $this->belongsToMany(Collection::class, 'collection_tags');
     }
 }
