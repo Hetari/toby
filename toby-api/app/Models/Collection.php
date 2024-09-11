@@ -19,4 +19,9 @@ class Collection extends Model
     {
         return $this->belongsTo(Tag::class);
     }
+
+    public function tabs()
+    {
+        return $this->hasMany(Tab::class);
+    }
 }
