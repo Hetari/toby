@@ -6,6 +6,7 @@ use App\Models\Tag;
 use App\Models\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class TagController extends Controller
@@ -28,7 +29,7 @@ class TagController extends Controller
         try {
             $tag = Tag::create([
                 'title' => $request->title,
-                'user_id' => $request->user()->id,
+                'user_id' => Auth::guard('api')->user()->id,
             ]);
 
             return response()->json([
@@ -50,7 +51,7 @@ class TagController extends Controller
     {
         try {
             $tags = Tag::with('collections')
-                ->where('user_id', $request->user()->id)
+                ->where('user_id', Auth::guard('api')->user()->id)
                 ->when($id, function ($query) use ($id) {
                     return $query->where('id', $id);
                 })
