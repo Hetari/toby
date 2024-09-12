@@ -14,6 +14,6 @@ class Tag extends Model
     // Many-to-Many relationship with Collection
     public function collections()
     {
-        return $this->belongsToMany(Collection::class, 'collection_tags');
+        return $this->belongsToMany(Collection::class, 'collection_tag');
     }
 }

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->text('description')->nullable();
-            $table->boolean('is_starred')->default(false);
+            $table->boolean('is_fav')->default(false);
 
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('tag_id')->nullable();

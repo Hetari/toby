@@ -6,6 +6,7 @@ use App\Models\Collection;
 use App\Models\Tab;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class TabControllerTest extends TestCase
@@ -29,7 +30,7 @@ class TabControllerTest extends TestCase
             ->create()
             ->last();
     }
-    /** @test */
+    #[Test]
     public function it_can_create_a_new_tab_successfully()
     {
         $collection = $this->collection;
@@ -53,7 +54,7 @@ class TabControllerTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function it_fails_to_create_a_tab_with_invalid_data()
     {
         $response = $this->actingAs($this->user)->postJson('/api/tabs', [
@@ -70,21 +71,21 @@ class TabControllerTest extends TestCase
     }
 
 
-    /** @test */
+    #[Test]
     public function it_can_retrieve_all_tabs()
     {
         $response = $this->actingAs($this->user)->getJson("/api/tabs/");
         $response->assertStatus(200);
     }
 
-    /** @test */
+    #[Test]
     public function it_can_retrieve_a_specific_tab_by_id()
     {
         $response = $this->actingAs($this->user)->getJson("/api/tabs/{$this->tab->id}");
 
         $response->assertStatus(200);
     }
-    /** @test */
+    #[Test]
     public function it_can_update_a_tab_successfully()
     {
         $response = $this->actingAs($this->user)->putJson("/api/tabs/{$this->tab->id}", [

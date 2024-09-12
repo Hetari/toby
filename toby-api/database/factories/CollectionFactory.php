@@ -19,7 +19,7 @@ class CollectionFactory extends Factory
     {
         return [
             'title' => $this->faker->word(),
-            'is_starred' => $this->faker->boolean(),
+            'is_fav' => $this->faker->boolean(),
             'user_id' => User::factory(),
         ];
     }

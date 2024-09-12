@@ -42,7 +42,7 @@ class CollectionController extends Controller
         // Validate input
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|max:255',
-            'isStared' => 'nullable|boolean',
+            'is_fav' => 'nullable|boolean',
             'tagId' => 'nullable|exists:tags,id',
             'description' => 'nullable|string',
         ]);
@@ -59,7 +59,7 @@ class CollectionController extends Controller
             // Create the collection
             $collection = Collection::create([
                 'title' => $request->title,
-                'is_stared' => $request->isStared ?? false,
+                'is_fav' => $request->is_fav ?? false,
                 'description' => $request->description ?? null,
                 'user_id' => Auth::id(),
             ]);
@@ -92,7 +92,7 @@ class CollectionController extends Controller
             'title' => 'required|string|max:255',
             'tagId' => 'nullable|exists:tags,id',
             'description' => 'nullable|string',
-            'isStared' => 'nullable|boolean',
+            'is_fav' => 'nullable|boolean',
         ]);
 
         if ($validator->fails()) {
@@ -115,7 +115,7 @@ class CollectionController extends Controller
 
             $collection->update([
                 'title' => $request->title,
-                'is_stared' => $request->isStared ?? $collection->is_stared,
+                'is_fav' => $request->is_fav ?? $collection->is_fav,
                 'description' => $request->description ?? $collection->description,
                 'tag_id' => $request->tagId ?? $collection->tag_id,
             ]);
