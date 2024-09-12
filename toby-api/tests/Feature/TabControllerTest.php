@@ -87,7 +87,6 @@ class TabControllerTest extends TestCase
     /** @test */
     public function it_can_update_a_tab_successfully()
     {
-
         $response = $this->actingAs($this->user)->putJson("/api/tabs/{$this->tab->id}", [
             'title' => 'Updated Tab',
             'url' => 'https://updated-url.com',
