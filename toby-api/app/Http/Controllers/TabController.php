@@ -2,140 +2,40 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Tab;
+use App\Services\TabService;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
 
 class TabController extends Controller
 {
-    // Create a new Tab
+    protected $tabService;
+
+    public function __construct(TabService $tabService)
+    {
+        $this->tabService = $tabService;
+    }
+
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'title' => 'required|string|max:255',
-            'url' => 'required|url',
-            'collection_id' => 'required|exists:collections,id',
-        ]);
+        $result = $this->tabService->createTab($request->all());
 
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Invalid input',
-                'errors' => $validator->errors(),
-            ], Response::HTTP_BAD_REQUEST);
-        }
-
-        try {
-            $tab = Tab::create([
-                'title' => $request->title,
-                'url' => $request->url,
-                'collection_id' => $request->collection_id,
-            ]);
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Tab created successfully',
-                'data' => $tab,
-            ], Response::HTTP_CREATED);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Error creating tab',
-                'error' => $e->getMessage(),
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
+        return $result;
     }
 
-    // Get All Tabs, or a Single Tab by ID
     public function index(Request $request, $id = null)
     {
-        try {
-            $tabs = Tab::with('collection')
-                ->whereHas('collection', function ($query) {
-                    $query->where('user_id', Auth::id());
-                })
-                ->when($id, function ($query, $id) {
-                    return $query->where('id', $id);
-                })
-                ->get();
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Tabs retrieved',
-                'data' => $tabs,
-            ], Response::HTTP_OK);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => $e->getMessage(),
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
+        $result = $this->tabService->getAllTabs($id);
+        return response()->json($result);
     }
 
-
-    // Delete a Tab
-    public function destroy($id)
-    {
-        try {
-            $tab = Tab::findOrFail($id);
-            $tab->delete();
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Tab deleted successfully',
-            ], Response::HTTP_OK);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => $e->getMessage(),
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    // Update a Tab
     public function update(Request $request, $id)
     {
-        $validator = Validator::make($request->all(), [
-            'title' => 'sometimes|string|max:255',
-            'url' => 'sometimes|url',
-            'collection_id' => 'sometimes|exists:collections,id',
-        ]);
+        $result = $this->tabService->updateTab($id, $request->all());
+        return response()->json($result);
+    }
 
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Invalid input',
-                'errors' => $validator->errors(),
-            ], Response::HTTP_BAD_REQUEST);
-        }
-
-        try {
-            $tab = Tab::findOrFail($id);
-
-            if ($request->has('title')) {
-                $tab->title = $request->title;
-            }
-            if ($request->has('url')) {
-                $tab->url = $request->url;
-            }
-            if ($request->has('collection_id')) {
-                $tab->collection_id = $request->collection_id;
-            }
-
-            $tab->save();
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Tab updated successfully',
-                'data' => $tab,
-            ], Response::HTTP_OK);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => $e->getMessage(),
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
+    public function destroy($id)
+    {
+        $result = $this->tabService->deleteTab($id);
+        return response()->json($result);
     }
 }

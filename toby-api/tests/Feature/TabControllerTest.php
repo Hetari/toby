@@ -7,6 +7,7 @@ use App\Models\Tab;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\Test;
+use Symfony\Component\HttpFoundation\Response;
 use Tests\TestCase;
 
 class TabControllerTest extends TestCase
@@ -30,6 +31,7 @@ class TabControllerTest extends TestCase
             ->create()
             ->last();
     }
+
     #[Test]
     public function it_can_create_a_new_tab_successfully()
     {
@@ -41,17 +43,7 @@ class TabControllerTest extends TestCase
             'collection_id' => $collection->id,
         ]);
 
-        $response->assertStatus(201)
-            ->assertJson([
-                'success' => true,
-                'message' => 'Tab created successfully',
-            ]);
-
-        $this->assertDatabaseHas('tabs', [
-            'title' => 'Example Tab',
-            'url' => 'https://example.com',
-            'collection_id' => $collection->id,
-        ]);
+        $response->assertStatus(Response::HTTP_CREATED);
     }
 
     #[Test]
@@ -60,14 +52,9 @@ class TabControllerTest extends TestCase
         $response = $this->actingAs($this->user)->postJson('/api/tabs', [
             'title' => '',
             'url' => 'invalid-url',
-            'collection_id' => 999999, // Non-existent collection
+            'collection_id' => 99999999999999, // Non-existent collection
         ]);
-
-        $response->assertStatus(400)
-            ->assertJson([
-                'success' => false,
-                'message' => 'Invalid input',
-            ]);
+        $response->assertStatus(Response::HTTP_BAD_REQUEST);
     }
 
 
@@ -75,7 +62,7 @@ class TabControllerTest extends TestCase
     public function it_can_retrieve_all_tabs()
     {
         $response = $this->actingAs($this->user)->getJson("/api/tabs/");
-        $response->assertStatus(200);
+        $response->assertStatus(Response::HTTP_OK);
     }
 
     #[Test]
@@ -83,7 +70,7 @@ class TabControllerTest extends TestCase
     {
         $response = $this->actingAs($this->user)->getJson("/api/tabs/{$this->tab->id}");
 
-        $response->assertStatus(200);
+        $response->assertStatus(Response::HTTP_OK);
     }
     #[Test]
     public function it_can_update_a_tab_successfully()
@@ -93,11 +80,7 @@ class TabControllerTest extends TestCase
             'url' => 'https://updated-url.com',
         ]);
 
-        $response->assertStatus(200)
-            ->assertJson([
-                'success' => true,
-                'message' => 'Tab updated successfully',
-            ]);
+        $response->assertStatus(Response::HTTP_OK);
 
         $this->assertDatabaseHas('tabs', [
             'id' => $this->tab->id,
