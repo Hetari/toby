@@ -68,16 +68,14 @@ class CollectionControllerTest extends TestCase
             'is_fav' => true,
         ]);
 
-        dump($response->json());
-
         $response->assertStatus(200);
 
-        // $this->assertDatabaseHas('collections', [
-        //     'id' => $this->collection->id,
-        //     'title' => 'Updated Collection',
-        //     'description' => 'Updated description',
-        //     'is_fav' => true,
-        // ]);
+        $this->assertDatabaseHas('collections', [
+            'id' => $this->collection->id,
+            'title' => 'Updated Collection',
+            'description' => 'Updated description',
+            'is_fav' => true,
+        ]);
     }
 
     #[Test]
