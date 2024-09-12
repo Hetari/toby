@@ -53,7 +53,9 @@ class TabController extends Controller
     {
         try {
             $tabs = Tab::with('collection')
-                ->where('user_id', Auth::id())
+                ->whereHas('collection', function ($query) {
+                    $query->where('user_id', Auth::id());
+                })
                 ->when($id, function ($query, $id) {
                     return $query->where('id', $id);
                 })

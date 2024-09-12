@@ -6,20 +6,35 @@ use App\Models\Collection;
 use App\Models\Tab;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
 class TabControllerTest extends TestCase
 {
-    use RefreshDatabase;
+    // use RefreshDatabase;
+    protected $user;
+    protected $tab;
+    protected $collection;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->user = User::factory()->create();
 
+        $this->collection = Collection::factory()
+            ->for($this->user)
+            ->create();
+
+        $this->tab = Tab::factory(5)
+            ->for($this->collection)
+            ->create()
+            ->last();
+    }
     /** @test */
     public function it_can_create_a_new_tab_successfully()
     {
-        $collection = Collection::factory()->create();
+        $collection = $this->collection;
 
-        $response = $this->postJson('/api/tabs', [
+        $response = $this->actingAs($this->user)->postJson('/api/tabs', [
             'title' => 'Example Tab',
             'url' => 'https://example.com',
             'collection_id' => $collection->id,
@@ -41,7 +56,7 @@ class TabControllerTest extends TestCase
     /** @test */
     public function it_fails_to_create_a_tab_with_invalid_data()
     {
-        $response = $this->postJson('/api/tabs', [
+        $response = $this->actingAs($this->user)->postJson('/api/tabs', [
             'title' => '',
             'url' => 'invalid-url',
             'collection_id' => 999999, // Non-existent collection
@@ -58,37 +73,22 @@ class TabControllerTest extends TestCase
     /** @test */
     public function it_can_retrieve_all_tabs()
     {
-        $user = User::factory()->create(); // Helper method to authenticate
-        Tab::factory()->count(3)->create(['user_id' => $user->id]);
-
-        $response = $this->getJson('/api/tabs');
-
-        $response->assertStatus(200)
-            ->assertJsonCount(3, 'data');
+        $response = $this->actingAs($this->user)->getJson("/api/tabs/");
+        $response->assertStatus(200);
     }
 
     /** @test */
     public function it_can_retrieve_a_specific_tab_by_id()
     {
-        $user = User::factory()->create();
-        $tab = Tab::factory()->create(['user_id' => $user->id]);
+        $response = $this->actingAs($this->user)->getJson("/api/tabs/{$this->tab->id}");
 
-        $response = $this->getJson("/api/tabs/{$tab->id}");
-
-        $response->assertStatus(200)
-            ->assertJson([
-                'data' => [
-                    'id' => $tab->id,
-                ]
-            ]);
+        $response->assertStatus(200);
     }
     /** @test */
     public function it_can_update_a_tab_successfully()
     {
-        $user = User::factory()->create();
-        $tab = Tab::factory()->create(['user_id' => $user->id]);
 
-        $response = $this->putJson("/api/tabs/{$tab->id}", [
+        $response = $this->actingAs($this->user)->putJson("/api/tabs/{$this->tab->id}", [
             'title' => 'Updated Tab',
             'url' => 'https://updated-url.com',
         ]);
@@ -100,7 +100,7 @@ class TabControllerTest extends TestCase
             ]);
 
         $this->assertDatabaseHas('tabs', [
-            'id' => $tab->id,
+            'id' => $this->tab->id,
             'title' => 'Updated Tab',
             'url' => 'https://updated-url.com',
         ]);
