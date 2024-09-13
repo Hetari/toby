@@ -11,22 +11,29 @@ class AuthController extends Controller
 {
     public function register(Request $request)
     {
-        $data = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:4'],
-        ]);
+        try {
+            $data = $request->validate([
+                'name' => ['required', 'string', 'max:255'],
+                'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+                'password' => ['required', 'string', 'min:4'],
+            ]);
 
-        $user = User::Create($data);
-        $token = $user->createToken('auth_token')->plainTextToken;
+            $user = User::Create($data);
+            $token = $user->createToken('auth_token')->plainTextToken;
 
-        // return response([
-        //     'access_token' => $token,
-        // ], 201);
-        return response()->json([
-            'access_token' => $token,
-            'token_type' => 'Bearer',
-        ]);
+            $data['access_token'] = $token;
+            $data['token_type'] = 'Bearer';
+            
+            return response()->json([
+                'success' => true,
+                'data' => $data
+            ],201);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ],400);
+        }
     }
 
     public function login(Request $request)
@@ -48,10 +55,13 @@ class AuthController extends Controller
         // return response([
         //     'access_token' => $token,
         // ], 201);
+        $data['access_token'] = $token;
+        $data['token_type'] = 'Bearer';
+        
         return response()->json([
-            'access_token' => $token,
-            'token_type' => 'Bearer',
-        ]);
+            'success' => true,
+            'data' => $data
+        ],200);
     }
 
     public function test()
