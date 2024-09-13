@@ -10,6 +10,7 @@ use PHPUnit\Framework\Attributes\Test;
 use Symfony\Component\HttpFoundation\Response;
 use Tests\TestCase;
 
+// TODO: add assertJson for all tests
 class TabControllerTest extends TestCase
 {
     // use RefreshDatabase;

@@ -10,6 +10,7 @@ use Illuminate\Foundation\Testing\WithFaker;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
+// TODO: add assertJson for all tests
 class TagControllerTest extends TestCase
 {
     protected $user;
