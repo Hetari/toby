@@ -2,63 +2,26 @@
 
 namespace App\Services;
 
-use App\Repositories\TabRepository;
-use App\Repositories\CachedTabRepository;
+use App\Repositories\TagRepository;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
 
-class TabService
+class TagService
 {
-    protected $tabRepository;
-    protected $cacheTabRepository;
+    protected $tagRepository;
 
-    public function __construct(TabRepository $tabRepository, CachedTabRepository $cacheTabRepository)
+    public function __construct(TagRepository $tagRepository)
     {
-        $this->tabRepository = $tabRepository;
-        $this->cacheTabRepository = $cacheTabRepository;
+        $this->tagRepository = $tagRepository;
     }
 
-    public function getAllTabs()
-    {
-        return $this->cacheTabRepository->all();
-    }
-
-    public function getAllTabsWithCollection()
+    public function getAllTags()
     {
         $result = null;
         try {
-            $result = $this->cacheTabRepository->all(['collection']);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Error creating tag',
-                'error' => $e->getMessage(),
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
-        return $result;
-    }
-
-    public function getTabById($id)
-    {
-        $result = null;
-        try {
-            $result = $this->tabRepository->find($id);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Error creating tag',
-                'error' => $e->getMessage(),
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
-        return $result;
-    }
-
-    public function getTabByIdWithCollection($id)
-    {
-        $result = null;
-        try {
-            $result = $this->tabRepository->find($id, ['collection']);
+            $result = $this->tagRepository->all();
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
@@ -70,12 +33,59 @@ class TabService
         return $result;
     }
 
-    public function createTab($data)
+    public function getTagById($id)
+    {
+        $result = null;
+        try {
+            $result = $this->tagRepository->find($id);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error creating tag',
+                'error' => $e->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+        return $result;
+    }
+
+    public function createTag($data)
     {
         $validator = Validator::make($data, [
             'title' => 'required|string|max:255',
-            'url' => 'required|url',
-            'collection_id' => 'required|exists:collections,id',
+        ]);
+
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid input',
+                'errors' => $validator->errors(),
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        $data['user_id'] =
+            Auth::guard('api')->user()->id ? Auth::guard('api')->user()->id : Auth::id();
+
+        try {
+            $this->tagRepository->create($data);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error creating tag',
+                'error' => $e->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+        return response()->json([
+            'success' => true,
+            'message' => 'Tag created successfully',
+            'errors' => [],
+        ], Response::HTTP_CREATED);
+    }
+
+    public function updateTag($id, $data)
+    {
+        $validator = Validator::make($data, [
+            'title' => 'required|string|max:255',
         ]);
 
         if ($validator->fails()) {
@@ -90,40 +100,7 @@ class TabService
             Auth::guard('api')->user()->id ? Auth::guard('api')->user()->id : Auth::id();
 
         try {
-            $this->tabRepository->create($data);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Error creating tag',
-                'error' => $e->getMessage(),
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Tab created successfully',
-            'errors' => [],
-        ], Response::HTTP_CREATED);
-    }
-
-    public function updateTab($id, $data)
-    {
-        $validator = Validator::make($data, [
-            'title' => 'sometimes|string|max:255',
-            'url' => 'sometimes|url',
-            'collection_id' => 'sometimes|exists:collections,id',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Invalid input',
-                'errors' => $validator->errors(),
-            ], Response::HTTP_BAD_REQUEST);
-        }
-
-        try {
-            $this->tabRepository->update($id, $data);
+            $this->tagRepository->update($id, $data);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
@@ -133,24 +110,25 @@ class TabService
         }
         return response()->json([
             'success' => true,
-            'message' => 'Tab updated successfully',
+            'message' => 'Tag updated successfully',
             'errors' => [],
         ], Response::HTTP_OK);
     }
 
-    public function deleteTab($id)
+    public function deleteTag($id)
     {
-        $result = null;
         try {
-            $result = $this->tabRepository->delete($id);
+            $this->tagRepository->delete($id);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Error deleting tag',
-                'error' => $e->getMessage(),
+                'message' => $e->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        return $result;
+        return response()->json([
+            'success' => true,
+            'message' => 'Tag deleted successfully',
+        ], Response::HTTP_OK);
     }
 }

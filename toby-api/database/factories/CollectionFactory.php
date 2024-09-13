@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Tag;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -20,6 +21,7 @@ class CollectionFactory extends Factory
         return [
             'title' => $this->faker->word(),
             'is_fav' => $this->faker->boolean(),
+            'tag_id' => Tag::factory(),
             'user_id' => User::factory(),
         ];
     }
