@@ -17,6 +17,11 @@ class AuthController extends Controller
             'password' => ['required', 'string', 'min:4'],
         ]);
 
+        // TODO: fix this
+        // if (User::where('email', $data['email'])->exists()) {
+        //     return response()->json(['message' => 'Email already exists'], 400);
+        // }
+
         $user = User::Create($data);
         $token = $user->createToken('auth_token')->plainTextToken;
 
@@ -52,10 +57,5 @@ class AuthController extends Controller
             'access_token' => $token,
             'token_type' => 'Bearer',
         ]);
-    }
-
-    public function test()
-    {
-        return Auth::user();
     }
 }
