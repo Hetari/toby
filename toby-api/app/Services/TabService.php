@@ -16,24 +16,55 @@ class TabService
         $this->tabRepository = $tabRepository;
     }
 
-    public function getAllTabs($id = null)
+    public function getAllTabs()
     {
         return $this->tabRepository->all();
     }
 
-    public function getAllTabsWithCollection($id = null)
+    public function getAllTabsWithCollection()
     {
-        return $this->tabRepository->all(['collection']);
+        $result = null;
+        try {
+            $result = $this->tabRepository->all(['collection']);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error creating tag',
+                'error' => $e->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+        return $result;
     }
 
     public function getTabById($id)
     {
-        return $this->tabRepository->find($id);
+        $result = null;
+        try {
+            $result = $this->tabRepository->find($id);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error creating tag',
+                'error' => $e->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+        return $result;
     }
 
     public function getTabByIdWithCollection($id)
     {
-        return $this->tabRepository->find($id, ['collection']);
+        $result = null;
+        try {
+            $result = $this->tabRepository->find($id, ['collection']);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error creating tag',
+                'error' => $e->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        return $result;
     }
 
     public function createTab($data)
@@ -53,7 +84,17 @@ class TabService
         }
 
         $data['user_id'] = Auth::id();
-        $this->tabRepository->create($data);
+
+        try {
+            $this->tabRepository->create($data);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error creating tag',
+                'error' => $e->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
         return response()->json([
             'success' => true,
             'message' => 'Tab created successfully',
@@ -77,7 +118,15 @@ class TabService
             ], Response::HTTP_BAD_REQUEST);
         }
 
-        $this->tabRepository->update($id, $data);
+        try {
+            $this->tabRepository->update($id, $data);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error creating tag',
+                'error' => $e->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
         return response()->json([
             'success' => true,
             'message' => 'Tab updated successfully',
@@ -87,6 +136,17 @@ class TabService
 
     public function deleteTab($id)
     {
-        return $this->tabRepository->delete($id);
+        $result = null;
+        try {
+            $result = $this->tabRepository->delete($id);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error deleting tag',
+                'error' => $e->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        return $result;
     }
 }
