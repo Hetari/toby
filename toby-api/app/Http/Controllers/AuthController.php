@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
@@ -18,26 +19,30 @@ class AuthController extends Controller
                 'password' => ['required', 'string', 'min:4'],
             ]);
 
-        // TODO: fix this
-        // if (User::where('email', $data['email'])->exists()) {
-        //     return response()->json(['message' => 'Email already exists'], 400);
-        // }
+            // TODO: fix this
+            // if (User::where('email', $data['email'])->exists()) {
+            //     return response()->json(['message' => 'Email already exists'], 400);
+            // }
 
-        $user = User::Create($data);
-        $token = $user->createToken('auth_token')->plainTextToken;
+            $user = User::Create($data);
+            $token = $user->createToken('auth_token')->plainTextToken;
 
             $data['access_token'] = $token;
             $data['token_type'] = 'Bearer';
-            
+
             return response()->json([
                 'success' => true,
+                'message' => 'User created successfully',
+                'error' => [],
                 'data' => $data
-            ],201);
+            ], Response::HTTP_CREATED);
         } catch (\Throwable $e) {
             return response()->json([
                 'success' => false,
-                'message' => $e->getMessage(),
-            ],400);
+                'message' => 'Error creating user',
+                'error' => $e->getMessage(),
+                'data' => []
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -53,7 +58,12 @@ class AuthController extends Controller
             // return response([
             //     'message' => 'The provided credentials are incorrect.',
             // ], 401);
-            return response()->json(['message' => 'Invalid login details'], 401);
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid login details',
+                'error' => [],
+                'data' => []
+            ], Response::HTTP_UNAUTHORIZED);
         }
 
         $token = $user->createToken('auth_token')->plainTextToken;
@@ -62,11 +72,12 @@ class AuthController extends Controller
         // ], 201);
         $data['access_token'] = $token;
         $data['token_type'] = 'Bearer';
-        
+
         return response()->json([
             'success' => true,
+            'message' => 'Error creating user',
+            'error' => [],
             'data' => $data
-        ],200);
+        ], Response::HTTP_OK);
     }
-
 }
