@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Tag;
 use App\Models\Collection;
+use App\Services\TagService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
@@ -11,114 +12,38 @@ use Illuminate\Support\Facades\Validator;
 
 class TagController extends Controller
 {
+    protected $tagService;
+    public function __construct(TagService $tagService)
+    {
+        $this->tagService = $tagService;
+    }
+
     // Create a new Tag
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'title' => 'required|string|max:255',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Invalid input',
-                'errors' => $validator->errors(),
-            ], Response::HTTP_BAD_REQUEST);
-        }
-
-        try {
-            $tag = Tag::create([
-                'title' => $request->title,
-                'user_id' => Auth::guard('api')->user()->id,
-            ]);
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Tag created successfully',
-                'data' => $tag,
-            ], Response::HTTP_CREATED);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Error creating tag',
-                'error' => $e->getMessage(),
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
+        $result = $this->tagService->createTag($request->all());
+        return $result;
     }
 
     // Get All Tags, on a Collection by ID
     public function index(Request $request, $id = null)
     {
-        try {
-            $tags = Tag::with('collections')
-                ->where('user_id', Auth::guard('api')->user()->id)
-                ->when($id, function ($query) use ($id) {
-                    return $query->where('id', $id);
-                })
-                ->get();
-
-            return response()->json([
-                'success' => true,
-                'message' => 'OK',
-                'data' => $tags,
-            ], Response::HTTP_OK);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => $e->getMessage(),
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
+        $result = $this->tagService->getAllTags($id);
+        return response()->json($result);
     }
+
 
     // Delete a Tag
     public function destroy($id)
     {
-        try {
-            $tag = Tag::findOrFail($id);
-            $tag->delete();
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Tag deleted successfully',
-            ], Response::HTTP_OK);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => $e->getMessage(),
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
+        $result = $this->tagService->deleteTag($id);
+        return response()->json($result);
     }
 
     // Update a Tag
     public function update(Request $request, $id)
     {
-        $validator = Validator::make($request->all(), [
-            'title' => 'required|string|max:255',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Invalid input',
-                'errors' => $validator->errors(),
-            ], Response::HTTP_BAD_REQUEST);
-        }
-
-        try {
-            $tag = Tag::findOrFail($id);
-            $tag->title = $request->title;
-            $tag->save();
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Tag updated successfully',
-                'data' => $tag,
-            ], Response::HTTP_OK);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => $e->getMessage(),
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
+        $result = $this->tagService->updateTag($id, $request->all());
+        return response()->json($result);
     }
 }
