@@ -86,7 +86,8 @@ class TabService
             ], Response::HTTP_BAD_REQUEST);
         }
 
-        $data['user_id'] = Auth::id();
+        $data['user_id'] =
+            Auth::guard('api')->user()->id ? Auth::guard('api')->user()->id : Auth::id();
 
         try {
             $this->tabRepository->create($data);
