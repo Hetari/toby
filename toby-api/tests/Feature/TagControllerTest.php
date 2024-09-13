@@ -5,8 +5,6 @@ namespace Tests\Feature;
 use App\Models\Collection;
 use App\Models\Tag;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Http\Response;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;

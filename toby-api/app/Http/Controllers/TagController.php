@@ -2,13 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Tag;
-use App\Models\Collection;
 use App\Services\TagService;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
 
 class TagController extends Controller
 {
@@ -26,7 +21,7 @@ class TagController extends Controller
     }
 
     // Get All Tags, on a Collection by ID
-    public function index(Request $request, $id = null)
+    public function index($id = null)
     {
         $result = $this->tagService->getAllTags($id);
         return response()->json($result);
