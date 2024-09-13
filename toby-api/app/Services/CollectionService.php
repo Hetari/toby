@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Repositories\CollectionRepository;
+use App\Repositories\CachedCollectionRepository;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
@@ -10,15 +11,17 @@ use Symfony\Component\HttpFoundation\Response;
 class CollectionService
 {
     protected $collectionRepository;
+    protected $cacheCollectionRepository;
 
-    public function __construct(CollectionRepository $collectionRepository)
+    public function __construct(CollectionRepository $collectionRepository, CachedCollectionRepository $cacheCollectionRepository)
     {
         $this->collectionRepository = $collectionRepository;
+        $this->cacheCollectionRepository = $cacheCollectionRepository;
     }
 
     public function getAllCollections()
     {
-        return $this->collectionRepository->all();
+        return $this->cacheCollectionRepository->all();
     }
 
     public function getAllCollectionsWithTags()
@@ -30,7 +33,7 @@ class CollectionService
     {
         $result = null;
         try {
-            $result = $this->collectionRepository->find($id);
+            $result = $this->cacheCollectionRepository->find($id);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,

@@ -4,18 +4,18 @@ namespace App\Repositories;
 
 use Illuminate\Support\Facades\Cache;
 
-class CachedTabRepository extends TabRepository
+class CachedTabRepository extends TagRepository
 {
-    protected $tabRepository;
+    protected $tagRepository;
 
-    public function __construct(TabRepository $tabRepository)
+    public function __construct(TagRepository $tagRepository)
     {
-        $this->tabRepository = $tabRepository;
+        $this->tagRepository = $tagRepository;
     }
 
     public function all(array $relations = [])
     {
-        $cacheKey = 'tabs.all';
+        $cacheKey = 'tags.all';
         if (Cache::has($cacheKey)) {
             $fromCache = true;
         } else {
@@ -25,19 +25,15 @@ class CachedTabRepository extends TabRepository
         // TODO: remove the unnecessary keys
         return [
             'data' => Cache::remember($cacheKey, 3600, function () use ($relations) {
-                return $this->tabRepository->all($relations);
+                return $this->tagRepository->all($relations);
             }),
             'from_cache' => $fromCache
         ];
-
-        // return Cache::remember('tabs', 3600, function () use ($relations) {
-        //     return $this->tabRepository->all($relations);
-        // });
     }
 
     public function find($id, array $relations = [])
     {
-        $cacheKey = 'tabs.find';
+        $cacheKey = 'tags.find';
         if (Cache::has($cacheKey)) {
             $fromCache = true;
         } else {
@@ -47,13 +43,9 @@ class CachedTabRepository extends TabRepository
         // TODO: remove the unnecessary keys
         return [
             'data' => Cache::remember($cacheKey, 3600, function () use ($id, $relations) {
-                return $this->tabRepository->find($id, $relations);
+                return $this->tagRepository->find($id, $relations);
             }),
             'from_cache' => $fromCache
         ];
-
-        // return Cache::remember('tab_' . $id, 3600, function () use ($id, $relations) {
-        //     return $this->tabRepository->find($id, $relations);
-        // });
     }
 }

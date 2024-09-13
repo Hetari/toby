@@ -35,8 +35,6 @@ class CollectionController extends Controller
     public function update(Request $request, $id)
     {
         $result = $this->collectionService->updateCollection($id, $request->all());
-
-
         return response()->json($result);
     }
 

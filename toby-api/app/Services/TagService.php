@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Repositories\CachedTabRepository;
 use App\Repositories\TagRepository;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
@@ -10,17 +11,19 @@ use Symfony\Component\HttpFoundation\Response;
 class TagService
 {
     protected $tagRepository;
+    protected $cacheTagRepository;
 
-    public function __construct(TagRepository $tagRepository)
+    public function __construct(TagRepository $tagRepository, CachedTabRepository $cacheTagRepository)
     {
         $this->tagRepository = $tagRepository;
+        $this->cacheTagRepository = $cacheTagRepository;
     }
 
     public function getAllTags()
     {
         $result = null;
         try {
-            $result = $this->tagRepository->all();
+            $result = $this->cacheTagRepository->all();
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
@@ -36,7 +39,7 @@ class TagService
     {
         $result = null;
         try {
-            $result = $this->tagRepository->find($id);
+            $result = $this->cacheTagRepository->find($id);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
