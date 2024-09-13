@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\AuthController;
+use App\Http\Controllers\SearchController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -13,6 +13,7 @@ require base_path('routes/authRoutes.php');
 
 
 Route::middleware(['isAuthenticated'])->group(function () {
+    Route::get('/search', [SearchController::class, 'search']);
     require base_path('routes/tagRoutes.php');
     require base_path('routes/tabRoutes.php');
     require base_path('routes/collectionRoutes.php');
