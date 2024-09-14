@@ -9,7 +9,6 @@ use Illuminate\Http\Response;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
-// TODO: add assertJson for all tests
 class TagControllerTest extends TestCase
 {
     protected $user;
@@ -38,7 +37,11 @@ class TagControllerTest extends TestCase
             'title' => 'New Tagskdhsd',
         ]);
 
-        $response->assertStatus(Response::HTTP_CREATED);
+        $response->assertStatus(Response::HTTP_CREATED)->assertJson([
+            'success' => true,
+            'message' => 'Tag created successfully',
+            'errors' => [],
+        ]);
     }
 
     #[Test]
@@ -48,7 +51,7 @@ class TagControllerTest extends TestCase
             'title' => '', // Invalid data (empty title)
         ]);
 
-        $response->assertStatus(400)
+        $response->assertStatus(Response::HTTP_BAD_REQUEST)
             ->assertJson([
                 'success' => false,
                 'message' => 'Invalid input',
@@ -60,7 +63,11 @@ class TagControllerTest extends TestCase
     {
         $response = $this->actingAs($this->user)->getJson('/api/tags');
 
-        $response->assertStatus(200);
+        $response->assertStatus(Response::HTTP_OK)
+            ->assertJson([
+                'data' => [],
+                'from_cache' => false,
+            ]);
     }
 
     #[Test]
@@ -68,7 +75,11 @@ class TagControllerTest extends TestCase
     {
         $response = $this->actingAs($this->user)->getJson("/api/tags/{$this->tag->id}");
 
-        $response->assertStatus(200);
+        $response->assertStatus(Response::HTTP_OK)
+            ->assertJson([
+                'data' => [],
+                'from_cache' => false,
+            ]);
     }
 
     #[Test]
@@ -78,7 +89,15 @@ class TagControllerTest extends TestCase
             'title' => 'Updated Tag',
         ]);
 
-        $response->assertStatus(Response::HTTP_OK);
+        $response->assertStatus(Response::HTTP_OK)
+            ->assertJson([
+                'original' =>
+                [
+                    'success' => true,
+                    'message' => 'Tag updated successfully',
+                    'errors' => [],
+                ]
+            ]);
     }
 
     #[Test]

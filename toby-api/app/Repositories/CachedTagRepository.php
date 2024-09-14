@@ -3,6 +3,8 @@
 namespace App\Repositories;
 
 use Illuminate\Support\Facades\Cache;
+use Symfony\Component\HttpFoundation\Response;
+
 
 class CachedTabRepository extends TagRepository
 {
@@ -16,19 +18,15 @@ class CachedTabRepository extends TagRepository
     public function all(array $relations = [])
     {
         $cacheKey = 'tags.all';
-        if (Cache::has($cacheKey)) {
-            $fromCache = true;
-        } else {
-            $fromCache = false;
-        }
 
-        // TODO: remove the unnecessary keys
-        return [
-            'data' => Cache::remember($cacheKey, 3600, function () use ($relations) {
-                return $this->tagRepository->all($relations);
-            }),
-            'from_cache' => $fromCache
-        ];
+        $result = Cache::remember($cacheKey, 3600, function () use ($relations) {
+            return $this->tagRepository->all($relations);
+        });
+
+        return
+            Cache::remember($cacheKey, 3600, function () use ($relations) {
+                return $this->tagRepository->all($$relations);
+            });
     }
 
     public function find($id, array $relations = [])
@@ -40,12 +38,8 @@ class CachedTabRepository extends TagRepository
             $fromCache = false;
         }
 
-        // TODO: remove the unnecessary keys
-        return [
-            'data' => Cache::remember($cacheKey, 3600, function () use ($id, $relations) {
-                return $this->tagRepository->find($id, $relations);
-            }),
-            'from_cache' => $fromCache
-        ];
+        return  Cache::remember($cacheKey, 3600, function () use ($id, $relations) {
+            return $this->tagRepository->find($id, $relations);
+        });
     }
 }

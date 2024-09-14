@@ -29,6 +29,8 @@ class TagService
                 'success' => false,
                 'message' => 'Error creating tag',
                 'error' => $e->getMessage(),
+                'data' => $result,
+
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
@@ -45,6 +47,8 @@ class TagService
                 'success' => false,
                 'message' => 'Error creating tag',
                 'error' => $e->getMessage(),
+                'data' => $result,
+
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
         return $result;
@@ -62,6 +66,7 @@ class TagService
                 'success' => false,
                 'message' => 'Invalid input',
                 'errors' => $validator->errors(),
+                'data' => [],
             ], Response::HTTP_BAD_REQUEST);
         }
 
@@ -69,18 +74,20 @@ class TagService
             Auth::guard('api')->user()->id ? Auth::guard('api')->user()->id : Auth::id();
 
         try {
-            $this->tagRepository->create($data);
+            $result = $this->tagRepository->create($data);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'Error creating tag',
                 'error' => $e->getMessage(),
+                'data' => [],
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
         return response()->json([
             'success' => true,
             'message' => 'Tag created successfully',
             'errors' => [],
+            'data' => $result,
         ], Response::HTTP_CREATED);
     }
 
@@ -95,6 +102,7 @@ class TagService
                 'success' => false,
                 'message' => 'Invalid input',
                 'errors' => $validator->errors(),
+                'data' => [],
             ], Response::HTTP_BAD_REQUEST);
         }
 
@@ -102,17 +110,21 @@ class TagService
             Auth::guard('api')->user()->id ? Auth::guard('api')->user()->id : Auth::id();
 
         try {
-            $this->tagRepository->update($id, $data);
+            $result = $this->tagRepository->update($id, $data);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'Error creating tag',
                 'error' => $e->getMessage(),
+                'data' => [],
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
+
+
         return response()->json([
             'success' => true,
             'message' => 'Tag updated successfully',
+            'data' => $result,
             'errors' => [],
         ], Response::HTTP_OK);
     }
@@ -120,17 +132,21 @@ class TagService
     public function deleteTag($id)
     {
         try {
-            $this->tagRepository->delete($id);
+            $result = $this->tagRepository->delete($id);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => $e->getMessage(),
+                'message' => 'Error deleting tag',
+                'errors' => $e->getMessage(),
+                'data' => [],
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return response()->json([
             'success' => true,
             'message' => 'Tag deleted successfully',
+            'errors' => [],
+            'data' => $result,
         ], Response::HTTP_OK);
     }
 }
