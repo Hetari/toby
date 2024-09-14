@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Collection;
 use App\Models\Tag;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -15,12 +16,8 @@ class CollectionController extends Controller
     public function index(Request $request, $id = null)
     {
         try {
-            // Fetch collections
             $collections = Collection::with('tags')
-                ->where('user_id', Auth::id())
-                ->when($id, function ($query, $id) {
-                    return $query->where('id', $id);
-                })
+                ->where('user_id', $id ?? $request->id)
                 ->get();
 
             return response()->json([
@@ -39,12 +36,12 @@ class CollectionController extends Controller
     // Store a new collection
     public function store(Request $request)
     {
-        // Validate input
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|max:255',
             'is_fav' => 'nullable|boolean',
             'tagId' => 'nullable|exists:tags,id',
             'description' => 'nullable|string',
+            'user_id' => 'required|exists:users,id'
         ]);
 
         if ($validator->fails()) {
@@ -56,20 +53,15 @@ class CollectionController extends Controller
         }
 
         try {
-            // Create the collection
             $collection = Collection::create([
                 'title' => $request->title,
                 'is_fav' => $request->is_fav ?? false,
-                'description' => $request->description ?? null,
-                'user_id' => Auth::id(),
+                'description' => $request->description,
+                'user_id' => $request->user_id,
             ]);
 
-            // Attach tag if provided
             if ($request->tagId) {
-                $tag = Tag::find($request->tagId);
-                if ($tag) {
-                    $collection->tags()->attach($tag);
-                }
+                $collection->tags()->attach($request->tagId);
             }
 
             return response()->json([
@@ -117,8 +109,11 @@ class CollectionController extends Controller
                 'title' => $request->title,
                 'is_fav' => $request->is_fav ?? $collection->is_fav,
                 'description' => $request->description ?? $collection->description,
-                'tag_id' => $request->tagId ?? $collection->tag_id,
             ]);
+
+            if ($request->tagId) {
+                $collection->tags()->sync($request->tagId);
+            }
 
             return response()->json([
                 'success' => true,
