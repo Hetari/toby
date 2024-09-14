@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Repositories\TabRepository;
+use App\Repositories\CachedTabRepository;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
@@ -10,22 +11,24 @@ use Symfony\Component\HttpFoundation\Response;
 class TabService
 {
     protected $tabRepository;
+    protected $cacheTabRepository;
 
-    public function __construct(TabRepository $tabRepository)
+    public function __construct(TabRepository $tabRepository, CachedTabRepository $cacheTabRepository)
     {
         $this->tabRepository = $tabRepository;
+        $this->cacheTabRepository = $cacheTabRepository;
     }
 
     public function getAllTabs()
     {
-        return $this->tabRepository->all();
+        return $this->cacheTabRepository->all();
     }
 
     public function getAllTabsWithCollection()
     {
         $result = null;
         try {
-            $result = $this->tabRepository->all(['collection']);
+            $result = $this->cacheTabRepository->all(['collection']);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
@@ -83,7 +86,8 @@ class TabService
             ], Response::HTTP_BAD_REQUEST);
         }
 
-        $data['user_id'] = Auth::id();
+        $data['user_id'] =
+            Auth::guard('api')->user()->id ? Auth::guard('api')->user()->id : Auth::id();
 
         try {
             $this->tabRepository->create($data);
