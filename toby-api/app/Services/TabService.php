@@ -24,21 +24,6 @@ class TabService
         return $this->cacheTabRepository->all();
     }
 
-    public function getAllTabsWithCollection()
-    {
-        $result = null;
-        try {
-            $result = $this->cacheTabRepository->all(['collection']);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Error creating tag',
-                'error' => $e->getMessage(),
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
-        return $result;
-    }
-
     public function getTabById($id)
     {
         $result = null;
@@ -47,28 +32,13 @@ class TabService
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Error creating tag',
+                'message' => 'Error getting tab',
                 'error' => $e->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
         return $result;
     }
 
-    public function getTabByIdWithCollection($id)
-    {
-        $result = null;
-        try {
-            $result = $this->tabRepository->find($id, ['collection']);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Error creating tag',
-                'error' => $e->getMessage(),
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
-
-        return $result;
-    }
 
     public function createTab($data)
     {
@@ -94,7 +64,7 @@ class TabService
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Error creating tag',
+                'message' => 'Error creating tab',
                 'error' => $e->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
@@ -127,7 +97,7 @@ class TabService
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Error creating tag',
+                'message' => 'Error updating tab',
                 'error' => $e->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }

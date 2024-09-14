@@ -18,11 +18,16 @@ class CollectionController extends Controller
     }
 
 
-    public function index($id = null)
+    public function index($id = null, $relations = null)
     {
-        $result = $this->collectionService->getAllCollections($id);
+        if ($id) {
+            $result = $this->collectionService->getCollectionById($id, $relations);
+        } else {
+            $result = $this->collectionService->getAllCollections($relations);
+        }
         return response()->json($result);
     }
+
 
     // Store a new collection
     public function store(Request $request)

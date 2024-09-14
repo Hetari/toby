@@ -21,9 +21,14 @@ class TagController extends Controller
     }
 
     // Get All Tags, on a Collection by ID
-    public function index($id = null)
+    public function index($id = null, $relations = null)
     {
-        $result = $this->tagService->getAllTags($id);
+        if (isset($id)) {
+            $result = $this->tagService->getTagById($id, $relations)->original ?? $this->tagService->getTagById($id, $relations);
+        } else {
+            $result = $this->tagService->getAllTags($relations);
+        }
+
         return response()->json($result);
     }
 

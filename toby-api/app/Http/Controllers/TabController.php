@@ -21,9 +21,13 @@ class TabController extends Controller
         return $result;
     }
 
-    public function index()
+    public function index($id = null, $relations = null)
     {
-        $result = $this->tabService->getAllTabs();
+        if ($id) {
+            $result = $this->tabService->getTabById($id, $relations);
+        } else {
+            $result = $this->tabService->getAllTabs($relations);
+        }
         return response()->json($result);
     }
 

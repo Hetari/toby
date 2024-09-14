@@ -6,6 +6,7 @@ use App\Repositories\CachedTabRepository;
 use App\Repositories\TagRepository;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
 
 class TagService
@@ -27,7 +28,7 @@ class TagService
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Error creating tag',
+                'message' => 'Error getting tag',
                 'error' => $e->getMessage(),
                 'data' => $result,
 
@@ -45,7 +46,7 @@ class TagService
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Error creating tag',
+                'message' => 'Error getting tag',
                 'error' => $e->getMessage(),
                 'data' => $result,
 
@@ -119,7 +120,6 @@ class TagService
                 'data' => [],
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-
 
         return response()->json([
             'success' => true,

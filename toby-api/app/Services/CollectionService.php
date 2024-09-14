@@ -19,44 +19,23 @@ class CollectionService
         $this->cacheCollectionRepository = $cacheCollectionRepository;
     }
 
-    public function getAllCollections()
+    public function getAllCollections($relations)
     {
-        return $this->cacheCollectionRepository->all();
+        return $this->cacheCollectionRepository->all($relations);
     }
 
-    public function getAllCollectionsWithTags()
-    {
-        // TODO: Implement getAllCollectionsWithTags() method.
-    }
-
-    public function getCollectionById($id)
+    public function getCollectionById($id, $relations)
     {
         $result = null;
         try {
-            $result = $this->cacheCollectionRepository->find($id);
+            $result = $this->cacheCollectionRepository->find($id, $relations);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Error creating tag',
+                'message' => 'Error getting collection',
                 'error' => $e->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-        return $result;
-    }
-
-    public function getCollectionByIdWithCollection($id)
-    {
-        $result = null;
-        try {
-            $result = $this->collectionRepository->find($id, ['collection']);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Error creating tag',
-                'error' => $e->getMessage(),
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
-
         return $result;
     }
 
@@ -84,7 +63,7 @@ class CollectionService
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Error creating tag',
+                'message' => 'Error creating collection',
                 'error' => $e->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
@@ -118,7 +97,7 @@ class CollectionService
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Error creating tag',
+                'message' => 'Error updating collection',
                 'error' => $e->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
