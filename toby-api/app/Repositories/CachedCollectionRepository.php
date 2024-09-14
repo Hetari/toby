@@ -13,25 +13,17 @@ class CachedCollectionRepository extends CollectionRepository
         $this->collectionRepository = $collectionRepository;
     }
 
-    public function all(array $relations = [])
+    public function all(array $relations = null)
     {
         $cacheKey = 'collections.all';
-        if (Cache::has($cacheKey)) {
-            $fromCache = true;
-        } else {
-            $fromCache = false;
-        }
 
-        // TODO: remove the unnecessary keys
-        return [
-            'data' => Cache::remember($cacheKey, 3600, function () use ($relations) {
+        return
+            Cache::remember($cacheKey, 3600, function () use ($relations) {
                 return $this->collectionRepository->all($relations);
-            }),
-            'from_cache' => $fromCache
-        ];
+            });
     }
 
-    public function find($id, array $relations = [])
+    public function find($id, array $relations = null)
     {
         $cacheKey = 'collections.find';
         if (Cache::has($cacheKey)) {

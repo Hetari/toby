@@ -6,6 +6,7 @@ use App\Repositories\CachedTabRepository;
 use App\Repositories\TagRepository;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -121,6 +122,11 @@ class TagService
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
+        Cache::forget(
+            'tags.all'
+        );
+        Cache::forget('tags.all');
+        Cache::forget('tags.find');
         return response()->json([
             'success' => true,
             'message' => 'Tag updated successfully',
@@ -142,6 +148,7 @@ class TagService
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
+        Cache::forget('tags.all');
         return response()->json([
             'success' => true,
             'message' => 'Tag deleted successfully',

@@ -6,6 +6,7 @@ use App\Repositories\TabRepository;
 use App\Repositories\CachedTabRepository;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Symfony\Component\HttpFoundation\Response;
 
 class TabService
@@ -101,6 +102,9 @@ class TabService
                 'error' => $e->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
+
+        Cache::forget('tabs.all');
+        Cache::forget('tabs.find');
         return response()->json([
             'success' => true,
             'message' => 'Tab updated successfully',
@@ -121,6 +125,7 @@ class TabService
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
+        Cache::forget('tabs.all');
         return $result;
     }
 }

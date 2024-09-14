@@ -12,9 +12,9 @@ Route::get('/user', function (Request $request) {
 require base_path('routes/authRoutes.php');
 
 
-Route::middleware(['isAuthenticated'])->group(function () {
-    Route::get('/search', [SearchController::class, 'search']);
-    require base_path('routes/tagRoutes.php');
-    require base_path('routes/tabRoutes.php');
-    require base_path('routes/collectionRoutes.php');
-});
+// Route::middleware(['isAuthenticated'])->group(function () {
+Route::get('/search', [SearchController::class, 'search']);
+require base_path('routes/tagRoutes.php');
+require base_path('routes/tabRoutes.php');
+require base_path('routes/collectionRoutes.php');
+// });

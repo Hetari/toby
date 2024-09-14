@@ -13,7 +13,7 @@ class CachedTabRepository extends TabRepository
         $this->tabRepository = $tabRepository;
     }
 
-    public function all(array $relations = [])
+    public function all(array $relations = null)
     {
         $cacheKey = 'tabs.all';
         if (Cache::has($cacheKey)) {
@@ -35,7 +35,7 @@ class CachedTabRepository extends TabRepository
         // });
     }
 
-    public function find($id, array $relations = [])
+    public function find($id, array $relations = null)
     {
         $cacheKey = 'tabs.find';
         if (Cache::has($cacheKey)) {

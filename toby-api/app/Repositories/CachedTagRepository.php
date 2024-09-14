@@ -16,7 +16,7 @@ class CachedTabRepository extends TagRepository
         $this->tagRepository = $tagRepository;
     }
 
-    public function all(array $relations = [])
+    public function all(array $relations = null)
     {
         $cacheKey = 'tags.all';
 
@@ -27,7 +27,7 @@ class CachedTabRepository extends TagRepository
         return $result;
     }
 
-    public function find($id, array $relations = [])
+    public function find($id, array $relations = null)
     {
         $cacheKey = 'tags.find';
 
