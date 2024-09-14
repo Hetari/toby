@@ -22,13 +22,9 @@ class CachedTabRepository extends TabRepository
             $fromCache = false;
         }
 
-        // TODO: remove the unnecessary keys
-        return [
-            'data' => Cache::remember($cacheKey, 3600, function () use ($relations) {
-                return $this->tabRepository->all($relations);
-            }),
-            'from_cache' => $fromCache
-        ];
+        return Cache::remember($cacheKey, 3600, function () use ($relations) {
+            return $this->tabRepository->all($relations);
+        });
 
         // return Cache::remember('tabs', 3600, function () use ($relations) {
         //     return $this->tabRepository->all($relations);
@@ -44,13 +40,9 @@ class CachedTabRepository extends TabRepository
             $fromCache = false;
         }
 
-        // TODO: remove the unnecessary keys
-        return [
-            'data' => Cache::remember($cacheKey, 3600, function () use ($id, $relations) {
-                return $this->tabRepository->find($id, $relations);
-            }),
-            'from_cache' => $fromCache
-        ];
+        return Cache::remember($cacheKey, 3600, function () use ($id, $relations) {
+            return $this->tabRepository->find($id, $relations);
+        });
 
         // return Cache::remember('tab_' . $id, 3600, function () use ($id, $relations) {
         //     return $this->tabRepository->find($id, $relations);
