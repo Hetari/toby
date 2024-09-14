@@ -104,7 +104,7 @@ class TabService
         }
 
         Cache::forget('tabs.all');
-        Cache::forget('tabs.find');
+        Cache::forget('tabs.find.' . $id);
         return response()->json([
             'success' => true,
             'message' => 'Tab updated successfully',

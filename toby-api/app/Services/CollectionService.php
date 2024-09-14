@@ -23,7 +23,7 @@ class CollectionService
     public function getAllCollections($relations)
     {
         Cache::forget('collections.all');
-        Cache::forget('collections.find');
+        Cache::forget('collections.find.' . $id);
         return $this->cacheCollectionRepository->all(['tabs']);
     }
 
@@ -127,7 +127,7 @@ class CollectionService
                 'error' => $e->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-        Cache::forget('collections.find');
+        Cache::forget('collections.find.' . $id);
         return $result;
     }
 }

@@ -29,7 +29,7 @@ class CachedTabRepository extends TagRepository
 
     public function find($id, array $relations = null)
     {
-        $cacheKey = 'tags.find';
+        $cacheKey = 'tags.find.' . $id;
 
         $result = Cache::remember($cacheKey, 3600, function () use ($id, $relations) {
             return $this->tagRepository->find($id, $relations);

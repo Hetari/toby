@@ -33,7 +33,7 @@ class CachedTabRepository extends TabRepository
 
     public function find($id, array $relations = null)
     {
-        $cacheKey = 'tabs.find';
+        $cacheKey = 'tabs.find.' . $id;
         if (Cache::has($cacheKey)) {
             $fromCache = true;
         } else {

@@ -126,7 +126,8 @@ class TagService
             'tags.all'
         );
         Cache::forget('tags.all');
-        Cache::forget('tags.find');
+        Cache::forget('tags.find.' . $id);
+
         return response()->json([
             'success' => true,
             'message' => 'Tag updated successfully',

@@ -100,14 +100,13 @@ class CollectionControllerTest extends TestCase
         ]);
     }
 
-    // TODO: do more tests for all apis
-    // #[Test]
-    // public function it_fails_to_update_a_collection_with_invalid_data()
-    // {
-    //     $response = $this->actingAs($this->user)->putJson("/api/collections/{$this->collection->id}", [
-    //         'title' => '',
-    //     ]);
+    #[Test]
+    public function it_fails_to_update_a_collection_with_invalid_data()
+    {
+        $response = $this->actingAs($this->user)->putJson("/api/collections/{$this->collection->id}", [
+            'title' => '',
+        ]);
 
-    //     $response->assertStatus(Response::HTTP_BAD_REQUEST);
-    // }
+        $response->assertStatus(Response::HTTP_BAD_REQUEST);
+    }
 }

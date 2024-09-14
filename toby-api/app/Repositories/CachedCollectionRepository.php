@@ -25,7 +25,8 @@ class CachedCollectionRepository extends CollectionRepository
 
     public function find($id, array $relations = null)
     {
-        $cacheKey = 'collections.find';
+        $cacheKey = 'collections.find.' . $id;
+
         return  Cache::remember($cacheKey, 3600, function () use ($id, $relations) {
             return $this->collectionRepository->find($id, $relations);
         });

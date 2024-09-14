@@ -26,7 +26,7 @@ class TagController extends Controller
         if (isset($id)) {
             $result = $this->tagService->getTagById($id, $relations)->original ?? $this->tagService->getTagById($id, $relations);
         } else {
-            $result = $this->tagService->getAllTags($relations);
+            $result = $this->tagService->getAllTags($relations)->original ?? $this->tagService->getAllTags($relations);
         }
 
         return response()->json($result);

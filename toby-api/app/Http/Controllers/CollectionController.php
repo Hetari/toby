@@ -21,9 +21,11 @@ class CollectionController extends Controller
     public function index($id = null, $relations = null)
     {
         if ($id) {
-            $result = $this->collectionService->getCollectionById($id, $relations);
+            $result = $this->collectionService->getCollectionById($id, $relations)
+                ->original ?? $this->collectionService->getCollectionById($id, $relations);
         } else {
-            $result = $this->collectionService->getAllCollections($relations);
+            $result = $this->collectionService->getAllCollections($relations)
+                ->original ?? $this->collectionService->getAllCollections($relations);
         }
         return response()->json($result);
     }
