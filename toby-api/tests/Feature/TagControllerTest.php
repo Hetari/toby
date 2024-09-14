@@ -87,12 +87,9 @@ class TagControllerTest extends TestCase
 
         $response->assertStatus(Response::HTTP_OK)
             ->assertJson([
-                'original' =>
-                [
-                    'success' => true,
-                    'message' => 'Tag updated successfully',
-                    'errors' => [],
-                ]
+                'success' => true,
+                'message' => 'Tag updated successfully',
+                'errors' => [],
             ]);
     }
 
@@ -124,13 +121,56 @@ class TagControllerTest extends TestCase
     public function it_fails_to_update_a_tag_with_invalid_data()
     {
         $response = $this->actingAs($this->user)->putJson("/api/tags/{$this->tag->id}", [
-            // 'title' => '1', // Invalid data
+            'title' => '', // Invalid data
         ]);
 
         $response->assertStatus(Response::HTTP_BAD_REQUEST)
             ->assertJson([
                 'success' => false,
                 'message' => 'Invalid input',
+            ]);
+    }
+
+    #[Test]
+    public function it_returns_not_found_when_deleting_non_existent_tag()
+    {
+        $response = $this->actingAs($this->user)->deleteJson('/api/tags/9999'); // Assuming ID 9999 doesn't exist
+
+        $response->assertStatus(Response::HTTP_NOT_FOUND)
+            ->assertJson([
+                'success' => false,
+                'message' => 'Tag not found',
+            ]);
+    }
+
+    #[Test]
+    public function it_fails_to_retrieve_tags_if_unauthenticated()
+    {
+        $response = $this->getJson('/api/tags'); // No actingAs
+
+        $response->assertStatus(Response::HTTP_UNAUTHORIZED)
+            ->assertJson([
+                'success' => false,
+                'error' => 'Unauthorized',
+                'message' => 'You must be logged in to access this resource.',
+            ]);
+    }
+
+    #[Test]
+    public function it_can_search_for_tags_by_title()
+    {
+        Tag::factory()->create([
+            'title' => 'Important Tag',
+            'user_id' => $this->user->id,
+        ]);
+
+        $response = $this->actingAs($this->user)->getJson('/api/tags?search=Important');
+
+        $response->assertStatus(Response::HTTP_OK)
+            ->assertJsonStructure([
+                'data' => [
+                    '*' => ['id', 'title', 'user_id', 'created_at', 'updated_at'],
+                ],
             ]);
     }
 }

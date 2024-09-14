@@ -70,7 +70,6 @@ class TabControllerTest extends TestCase
     public function it_can_retrieve_a_specific_tab_by_id()
     {
         $response = $this->actingAs($this->user)->getJson("/api/tabs/{$this->tab->id}");
-
         $response->assertStatus(Response::HTTP_OK);
     }
     #[Test]

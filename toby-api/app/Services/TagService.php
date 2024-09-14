@@ -104,7 +104,7 @@ class TagService
     public function updateTag($id, $data)
     {
         $validator = Validator::make($data, [
-            'title' => ['required', 'string', 'min:3'],
+            'title' => ['required', 'string', 'max:255', 'min:3'],
         ]);
 
         if ($validator->fails()) {
@@ -122,6 +122,15 @@ class TagService
         try {
             $result = $this->tagRepository->update($id, $data);
         } catch (\Exception $e) {
+            if (!isset($result)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Tag not found',
+                    'errors' => $e->getMessage(),
+                    'data' => [],
+                ], Response::HTTP_NOT_FOUND);
+            }
+
             return response()->json([
                 'success' => false,
                 'message' => 'Error creating tag',
@@ -143,6 +152,14 @@ class TagService
         try {
             $result = $this->tagRepository->delete($id);
         } catch (\Exception $e) {
+            if (!isset($result)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Tag not found',
+                    'errors' => $e->getMessage(),
+                    'data' => [],
+                ], Response::HTTP_NOT_FOUND);
+            }
             return response()->json([
                 'success' => false,
                 'message' => 'Error deleting tag',
