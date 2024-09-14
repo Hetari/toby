@@ -52,15 +52,11 @@ class BaseRepository
 
     public function update($id, array $data)
     {
-        $record = $this->find($id);
-        $record->update($data);
-
-        return $record;
+        return $this->find($id)->update($data);
     }
 
     public function delete($id)
     {
-        $record = $this->find($id);
-        return $record->delete();
+        return $this->find($id)->delete();
     }
 }

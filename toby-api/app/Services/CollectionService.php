@@ -6,7 +6,6 @@ use App\Repositories\CollectionRepository;
 use App\Repositories\CachedCollectionRepository;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cache;
 use Symfony\Component\HttpFoundation\Response;
 
 class CollectionService
@@ -22,8 +21,6 @@ class CollectionService
 
     public function getAllCollections($relations)
     {
-        Cache::forget('collections.all');
-        Cache::forget('collections.find.' . $id);
         return $this->cacheCollectionRepository->all(['tabs']);
     }
 
@@ -107,7 +104,6 @@ class CollectionService
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        Cache::forget('collections.all');
         return response()->json([
             'success' => true,
             'message' => 'Collection updated successfully',
@@ -127,7 +123,6 @@ class CollectionService
                 'error' => $e->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-        Cache::forget('collections.find.' . $id);
         return $result;
     }
 }

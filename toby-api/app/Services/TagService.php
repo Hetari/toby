@@ -2,12 +2,10 @@
 
 namespace App\Services;
 
-use App\Repositories\CachedTabRepository;
+use App\Repositories\CachedTagRepository;
 use App\Repositories\TagRepository;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
 
 class TagService
@@ -15,7 +13,7 @@ class TagService
     protected $tagRepository;
     protected $cacheTagRepository;
 
-    public function __construct(TagRepository $tagRepository, CachedTabRepository $cacheTagRepository)
+    public function __construct(TagRepository $tagRepository, CachedTagRepository $cacheTagRepository)
     {
         $this->tagRepository = $tagRepository;
         $this->cacheTagRepository = $cacheTagRepository;
@@ -41,18 +39,28 @@ class TagService
 
     public function getTagById($id)
     {
-        $result = null;
         try {
             $result = $this->cacheTagRepository->find($id);
         } catch (\Exception $e) {
+            // TODO: do this to all the services
+            if (!isset($result)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Tag not found',
+                    'errors' => $e->getMessage(),
+                    'data' => [],
+                ], Response::HTTP_NOT_FOUND);
+            }
+
             return response()->json([
                 'success' => false,
                 'message' => 'Error getting tag',
                 'error' => $e->getMessage(),
-                'data' => $result,
+                'data' => [],
 
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
+
         return $result;
     }
 
@@ -96,7 +104,7 @@ class TagService
     public function updateTag($id, $data)
     {
         $validator = Validator::make($data, [
-            'title' => 'required|string|max:255',
+            'title' => ['required', 'string', 'min:3'],
         ]);
 
         if ($validator->fails()) {
@@ -122,12 +130,6 @@ class TagService
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        Cache::forget(
-            'tags.all'
-        );
-        Cache::forget('tags.all');
-        Cache::forget('tags.find.' . $id);
-
         return response()->json([
             'success' => true,
             'message' => 'Tag updated successfully',
@@ -149,7 +151,6 @@ class TagService
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        Cache::forget('tags.all');
         return response()->json([
             'success' => true,
             'message' => 'Tag deleted successfully',

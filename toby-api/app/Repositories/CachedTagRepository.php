@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
 
 
-class CachedTabRepository extends TagRepository
+class CachedTagRepository extends TagRepository
 {
     protected $tagRepository;
 
