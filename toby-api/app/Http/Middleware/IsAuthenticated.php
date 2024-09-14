@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
 
 class IsAuthenticated
@@ -18,9 +19,10 @@ class IsAuthenticated
     {
         if (!Auth::guard('api')->check()) {
             return response()->json([
+                'success' => false,
                 'error' => 'Unauthorized',
                 'message' => 'You must be logged in to access this resource.',
-            ], 401);
+            ], Response::HTTP_UNAUTHORIZED);
         }
 
         return $next($request);

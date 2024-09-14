@@ -19,9 +19,18 @@ class BaseRepository
      * @param array $relations
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function all(array $relations = [])
+    public function all(array $relations = null)
     {
-        return $this->model->with($relations)->get();
+        // Convert single string to an array
+        if (is_string($relations)) {
+            $relations = [$relations];
+        }
+
+        if ($relations) {
+            return $this->model->with($relations)->get();
+        }
+
+        return $this->model->get();
     }
 
     /**
@@ -31,9 +40,9 @@ class BaseRepository
      * @param array $relations
      * @return Model
      */
-    public function find($id, array $relations = [])
+    public function find($id, array $relations = null)
     {
-        return $this->model->with($relations)->findOrFail($id);
+        return $this->model->with($relations ?? [])->findOrFail($id);
     }
 
     public function create(array $data)
@@ -43,14 +52,11 @@ class BaseRepository
 
     public function update($id, array $data)
     {
-        $record = $this->find($id);
-        $record->update($data);
-        return $record;
+        return $this->find($id)->update($data);
     }
 
     public function delete($id)
     {
-        $record = $this->find($id);
-        return $record->delete();
+        return $this->find($id)->delete();
     }
 }

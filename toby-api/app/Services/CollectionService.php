@@ -2,50 +2,52 @@
 
 namespace App\Services;
 
-use App\Repositories\TabRepository;
-use App\Repositories\CachedTabRepository;
+use App\Repositories\CollectionRepository;
+use App\Repositories\CachedCollectionRepository;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
-class TabService
+class CollectionService
 {
-    protected $tabRepository;
-    protected $cacheTabRepository;
+    protected $collectionRepository;
+    protected $cacheCollectionRepository;
 
-    public function __construct(TabRepository $tabRepository, CachedTabRepository $cacheTabRepository)
+    public function __construct(CollectionRepository $collectionRepository, CachedCollectionRepository $cacheCollectionRepository)
     {
-        $this->tabRepository = $tabRepository;
-        $this->cacheTabRepository = $cacheTabRepository;
+        $this->collectionRepository = $collectionRepository;
+        $this->cacheCollectionRepository = $cacheCollectionRepository;
     }
 
-    public function getAllTabs()
+    public function getAllCollections($relations)
     {
-        return $this->cacheTabRepository->all();
+        return $this->cacheCollectionRepository->all(['tabs']);
     }
 
-    public function getTabById($id)
-    {
+    public function getCollectionById(
+        $id,
+        $relations
+    ) {
         $result = null;
         try {
-            $result = $this->tabRepository->find($id);
+            $result = $this->cacheCollectionRepository->find($id, $relations);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Error getting tab',
+                'message' => 'Error getting collection',
                 'error' => $e->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
         return $result;
     }
 
-
-    public function createTab($data)
+    public function createCollection($data)
     {
         $validator = Validator::make($data, [
             'title' => 'required|string|max:255',
-            'url' => 'required|url',
-            'collection_id' => 'required|exists:collections,id',
+            'is_fav' => 'nullable|boolean',
+            'tag_id' => 'nullable|exists:tags,id',
+            'description' => 'nullable|string',
         ]);
 
         if ($validator->fails()) {
@@ -56,32 +58,32 @@ class TabService
             ], Response::HTTP_BAD_REQUEST);
         }
 
-        $data['user_id'] =
-            Auth::guard('api')->user()->id ? Auth::guard('api')->user()->id : Auth::id();
+        $data['user_id'] = Auth::guard('api')->user()->id ? Auth::guard('api')->user()->id : Auth::id();
 
         try {
-            $this->tabRepository->create($data);
+            $this->collectionRepository->create($data);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Error creating tab',
+                'message' => 'Error creating collection',
                 'error' => $e->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
         return response()->json([
             'success' => true,
-            'message' => 'Tab created successfully',
+            'message' => 'Collection created successfully',
             'errors' => [],
         ], Response::HTTP_CREATED);
     }
 
-    public function updateTab($id, $data)
+    public function updateCollection($id, $data)
     {
         $validator = Validator::make($data, [
-            'title' => 'sometimes|string|max:255',
-            'url' => 'sometimes|url',
-            'collection_id' => 'sometimes|exists:collections,id',
+            'title' => 'required|string|max:255',
+            'is_fav' => 'nullable|boolean',
+            'tag_id' => 'nullable|exists:tags,id',
+            'description' => 'nullable|string',
         ]);
 
         if ($validator->fails()) {
@@ -93,28 +95,27 @@ class TabService
         }
 
         try {
-            $this->tabRepository->update($id, $data);
+            $this->collectionRepository->update($id, $data);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Error updating tab',
+                'message' => 'Error updating collection',
                 'error' => $e->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-
         return response()->json([
             'success' => true,
-            'message' => 'Tab updated successfully',
+            'message' => 'Collection updated successfully',
             'errors' => [],
         ], Response::HTTP_OK);
     }
 
-    public function deleteTab($id)
+    public function deleteCollection($id)
     {
         $result = null;
         try {
-            $result = $this->tabRepository->delete($id);
+            $result = $this->collectionRepository->delete($id);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
@@ -122,7 +123,6 @@ class TabService
                 'error' => $e->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-
         return $result;
     }
 }

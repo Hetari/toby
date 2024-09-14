@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Collection extends Model
 {
     use HasFactory;
-    protected $fillable = ['title', 'is_fav', 'description', 'user_id', 'tag_id'];
+    protected $fillable = ['title', 'is_fav', 'description', 'user_id', 'tag_id', 'user'];
 
     public function user()
     {
@@ -23,5 +23,12 @@ class Collection extends Model
     public function tabs()
     {
         return $this->hasMany(Tab::class);
+    }
+
+    public function toSearchableArray()
+    {
+        return [
+            'title' => $this->title,
+        ];
     }
 }

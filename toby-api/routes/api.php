@@ -1,6 +1,9 @@
 <?php
 
-use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CollectionController;
+use App\Http\Controllers\SearchController;
+use App\Http\Controllers\TabController;
+use App\Http\Controllers\TagController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
