@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Tab;
 use App\Services\TabService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -15,33 +16,50 @@ class TabController extends Controller
     {
         $this->tabService = $tabService;
     }
+    private function _response_error(string $er ,int $statusCode){
+        return response()->json([
+            'success' => false,
+            'message' => $er
+        ],$statusCode);
+    }
 
     public function store(Request $request)
     {
-        $result = $this->tabService->createTab($request->all());
+        try {
+            $data = $request->validate([
+                'title'=> 'required|string|max:255',
+                'url'=> 'nullable|string|max:255',
+                'collection_id'=> 'required|exists:collections,id',
+            ]);
+            $tab = Tab::create($data);
+            
+            return response()->json([
+                'success' =>true,
+                'message' => 'Tabs created successfully',
+                'data' => $tab
+            ]);
 
-        return $result;
+        } catch (\Throwable $e) {
+            return $this->_response_error($e->getMessage(), 400);
+        }
     }
 
-    public function index($id = null, $relations = null)
+    public function index(Request $request)
     {
-        if ($id) {
-            $result = $this->tabService->getTabById($id, $relations);
-        } else {
-            $result = $this->tabService->getAllTabs($relations);
+        try {
+            $result = Tab::where('collection_id', $request->collection_id)->get();
+        
+            return response()->json([
+                'success' => true,
+                'message' => 'Tabs retrieved successfully',
+                'data' => $result,
+                'errors' => [],
+            ], Response::HTTP_OK);
+        } catch (\Throwable $e) {
+            return $this->_response_error($e->getMessage(), 400);
         }
-
-        if ($result instanceof \Illuminate\Http\JsonResponse) {
-            return $result;
-        }
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Tabs retrieved successfully',
-            'data' => $result,
-            'errors' => [],
-        ], Response::HTTP_OK);
     }
+
 
     public function update(Request $request, $id)
     {
