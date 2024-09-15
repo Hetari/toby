@@ -131,9 +131,23 @@ export default {
         // Redirect to login page after successful registration
         this.$router.push("/login");
       } catch (error) {
-        alert(error);
-        console.error("Error registering user:", error);
+        // Check if there is a response from the server
+        if (error.response) {
+          // The request was made, but the server responded with a status code outside of 2xx
+          alert(`Error: ${error.response.data.error || "Registration failed"}`);
+        } else if (error.request) {
+          // The request was made, but no response was received
+          alert("No response received from the server.");
+          console.error("No response received:", error.request);
+        } else {
+          // Something else caused the error
+          alert(`Error: ${error.message}`);
+          console.error("Error:", error.message);
+        }
+      } finally {
+        this.isSubmitting = false; // Reset the loading state
       }
+      this.isSubmitting = false;
     },
   },
 };

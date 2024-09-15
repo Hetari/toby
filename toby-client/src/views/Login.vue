@@ -123,11 +123,28 @@ export default {
         // localStorage.setItem('authToken', response.data.token);
         // this.$router.push('/dashboard');
       } catch (error) {
-        console.error("Login error:", error);
-        // Handle login error, show feedback to user
+        // Check if the error response exists
+        if (error.response) {
+          // Server responded with a status other than 2xx
+          alert(
+            `Login failed: ${
+              error.response.data.message || "Invalid email or password"
+            }`
+          );
+          console.error("Login error:", error.response.data);
+        } else if (error.request) {
+          // Request was made but no response was received
+          alert("No response from the server. Please try again later.");
+          console.error("No response received:", error.request);
+        } else {
+          // Other types of errors (e.g., client-side errors)
+          alert(`Error: ${error.message}`);
+          console.error("Error:", error.message);
+        }
       } finally {
         this.isSubmitting = false; // Re-enable the form
       }
+      this.isSubmitting = false;
     },
   },
 };
