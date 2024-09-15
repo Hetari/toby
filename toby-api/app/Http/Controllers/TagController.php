@@ -18,6 +18,8 @@ class TagController extends Controller
     // Create a new Tag
     public function store(Request $request)
     {
+        Cache::forget('tags.all');
+
         $result = $this->tagService->createTag($request->all());
         return $result;
     }

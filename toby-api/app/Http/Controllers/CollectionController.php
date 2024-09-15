@@ -6,6 +6,8 @@ use App\Services\CollectionService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Validator;
+
 
 class CollectionController extends Controller
 {
@@ -45,7 +47,10 @@ class CollectionController extends Controller
     // Store a new collection
     public function store(Request $request)
     {
+        Cache::forget('collections.all');
+
         $result = $this->collectionService->createCollection($request->all());
+
         if ($result instanceof \Illuminate\Http\JsonResponse) {
             return $result;
         }

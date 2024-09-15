@@ -18,6 +18,7 @@ class TabController extends Controller
 
     public function store(Request $request)
     {
+        Cache::forget('tabs.all');
         $result = $this->tabService->createTab($request->all());
 
         return $result;
