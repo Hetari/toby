@@ -72,11 +72,19 @@ class AuthController extends Controller
                 'message' => $e->getMessage(),
             ], 400);
         }
-    }
 
-    // Test authenticated user
-    public function test()
-    {
-        return Auth::user();
+        $token = $user->createToken('auth_token')->plainTextToken;
+        // return response([
+        //     'access_token' => $token,
+        // ], 201);
+        $data['access_token'] = $token;
+        $data['token_type'] = 'Bearer';
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Error creating user',
+            'error' => [],
+            'data' => $data
+        ], 400);
     }
 }
