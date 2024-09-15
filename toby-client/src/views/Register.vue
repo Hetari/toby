@@ -14,7 +14,7 @@
     </div>
 
     <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-      <form class="space-y-6" action="#" method="POST">
+      <form class="space-y-6" @submit.prevent="registerUser">
         <div>
           <label
             for="Name"
@@ -27,6 +27,7 @@
               name="Name"
               type="Name"
               autocomplete="Name"
+              v-model="form.name"
               required
               class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
             />
@@ -44,6 +45,7 @@
               name="email"
               type="email"
               autocomplete="email"
+              v-model="form.email"
               required
               class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
             />
@@ -64,6 +66,7 @@
               name="password"
               type="password"
               autocomplete="current-password"
+              v-model="form.password"
               required
               class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
             />
@@ -73,9 +76,11 @@
         <div>
           <button
             type="submit"
+            :disabled="isSubmitting"
             class="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
           >
-            Sign up
+            <span v-if="isSubmitting">Submitting...</span>
+            <span v-else>Sign up</span>
           </button>
         </div>
       </form>
@@ -95,7 +100,43 @@
 </template>
 
 <script>
-export default {};
+import axios from "axios";
+
+export default {
+  data() {
+    return {
+      form: {
+        name: "",
+        email: "",
+        password: "",
+      },
+      isSubmitting: false, // Track form submission status
+    };
+  },
+  methods: {
+    async registerUser() {
+      this.isSubmitting = true; // Set loading state to true when submission starts
+      try {
+        const response = await axios.post(
+          "http://localhost:8000/api/register",
+          this.form,
+          {
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        alert("User was successfully Register");
+        // Redirect to login page after successful registration
+        this.$router.push("/login");
+      } catch (error) {
+        alert(error);
+        console.error("Error registering user:", error);
+      }
+    },
+  },
+};
 </script>
 
 <style></style>
