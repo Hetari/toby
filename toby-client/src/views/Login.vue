@@ -108,6 +108,12 @@ export default {
             },
           }
         );
+
+        // Store the access_token in localStorage
+        const token = response.data.data.access_token;
+        const email = response.data.data.email;
+        localStorage.setItem("accessToken", token);
+        localStorage.setItem("User Email", email);
         alert(response.data.message);
         this.$router.push("/");
         console.log("Login successful:", response.data);
