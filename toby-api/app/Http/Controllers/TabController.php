@@ -25,9 +25,23 @@ class TabController extends Controller
 
     public function store(Request $request)
     {
-        $result = $this->tabService->createTab($request->all());
+        try {
+            $data = $request->validate([
+                'title'=> 'required|string|max:255',
+                'url'=> 'nullable|string|max:255',
+                'collection_id'=> 'required|exists:collections,id',
+            ]);
+            $tab = Tab::create($data);
+            
+            return response()->json([
+                'success' =>true,
+                'message' => 'Tabs created successfully',
+                'data' => $tab
+            ]);
 
-        return $result;
+        } catch (\Throwable $e) {
+            return $this->_response_error($e->getMessage(), 400);
+        }
     }
 
     public function index(Request $request)
