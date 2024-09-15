@@ -30,7 +30,6 @@ class TabController extends Controller
         return $result;
     }
 
-
     public function index(Request $request)
     {
         try {
