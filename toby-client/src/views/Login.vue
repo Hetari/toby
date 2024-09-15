@@ -14,7 +14,7 @@
     </div>
 
     <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-      <form class="space-y-6" action="#" method="POST">
+      <form @submit.prevent="loginUser" class="space-y-6">
         <div>
           <label
             for="email"
@@ -27,6 +27,7 @@
               name="email"
               type="email"
               autocomplete="email"
+              v-model="form.email"
               required
               class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
             />
@@ -47,6 +48,7 @@
               name="password"
               type="password"
               autocomplete="current-password"
+              v-model="form.password"
               required
               class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
             />
@@ -56,9 +58,11 @@
         <div>
           <button
             type="submit"
+            :disabled="isSubmitting"
             class="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
           >
-            Sign up
+            <span v-if="isSubmitting">Logging in...</span>
+            <span v-else>Login</span>
           </button>
         </div>
       </form>
@@ -77,7 +81,49 @@
 </template>
 
 <script>
-export default {};
+import axios from "axios";
+
+export default {
+  data() {
+    return {
+      form: {
+        email: "",
+        password: "",
+      },
+      isSubmitting: false, // Track login status
+    };
+  },
+  methods: {
+    async loginUser() {
+      this.isSubmitting = true; // Disable form and show "Logging in..." text
+
+      try {
+        const response = await axios.post(
+          "http://localhost:8000/api/login",
+          this.form,
+          {
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        alert(response.data.message);
+        console.log("Login successful:", response.data);
+
+        // Handle successful login, e.g., save token and redirect
+        // For example:
+        // localStorage.setItem('authToken', response.data.token);
+        // this.$router.push('/dashboard');
+      } catch (error) {
+        console.error("Login error:", error);
+        // Handle login error, show feedback to user
+      } finally {
+        this.isSubmitting = false; // Re-enable the form
+      }
+    },
+  },
+};
 </script>
 
 <style></style>
