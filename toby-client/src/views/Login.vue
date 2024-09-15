@@ -109,6 +109,7 @@ export default {
           }
         );
         alert(response.data.message);
+        this.$router.push("/");
         console.log("Login successful:", response.data);
 
         // Handle successful login, e.g., save token and redirect
