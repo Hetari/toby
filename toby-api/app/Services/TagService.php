@@ -66,20 +66,6 @@ class TagService
 
     public function createTag($data)
     {
-        $validator = Validator::make($data, [
-            'title' => 'required|string|max:255',
-        ]);
-
-
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Invalid input',
-                'errors' => $validator->errors(),
-                'data' => [],
-            ], Response::HTTP_BAD_REQUEST);
-        }
-
         $data['user_id'] =
             Auth::guard('api')->user()->id ? Auth::guard('api')->user()->id : Auth::id();
 
@@ -103,19 +89,6 @@ class TagService
 
     public function updateTag($id, $data)
     {
-        $validator = Validator::make($data, [
-            'title' => ['required', 'string', 'max:255', 'min:3'],
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Invalid input',
-                'errors' => $validator->errors(),
-                'data' => [],
-            ], Response::HTTP_BAD_REQUEST);
-        }
-
         $data['user_id'] =
             Auth::guard('api')->user()->id ? Auth::guard('api')->user()->id : Auth::id();
 

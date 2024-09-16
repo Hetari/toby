@@ -26,7 +26,7 @@ class TabController extends Controller
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
-                'message' => 'Invalid input',
+                'message' => 'Not found',
                 'errors' => $validator->errors(),
             ], Response::HTTP_NOT_FOUND);
         }
