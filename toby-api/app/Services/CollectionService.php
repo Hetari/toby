@@ -43,21 +43,6 @@ class CollectionService
 
     public function createCollection($data)
     {
-        $validator = Validator::make($data, [
-            'title' => 'required|string|max:255',
-            'is_fav' => 'nullable|boolean',
-            'tag_id' => 'nullable|exists:tags,id',
-            'description' => 'nullable|string',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Invalid input',
-                'errors' => $validator->errors(),
-            ], Response::HTTP_BAD_REQUEST);
-        }
-
         $data['user_id'] = Auth::guard('api')->user()->id ? Auth::guard('api')->user()->id : Auth::id();
 
         try {
@@ -79,19 +64,15 @@ class CollectionService
 
     public function updateCollection($id, $data)
     {
-        $validator = Validator::make($data, [
-            'title' => 'required|string|max:255',
-            'is_fav' => 'nullable|boolean',
-            'tag_id' => 'nullable|exists:tags,id',
-            'description' => 'nullable|string',
-        ]);
+        $data['user_id'] = Auth::guard('api')->user()->id ? Auth::guard('api')->user()->id : Auth::id();
 
-        if ($validator->fails()) {
+        $collection = $this->collectionRepository->find($id);
+        if ($collection->user_id !== $data['user_id']) {
             return response()->json([
                 'success' => false,
-                'message' => 'Invalid input',
-                'errors' => $validator->errors(),
-            ], Response::HTTP_BAD_REQUEST);
+                'message' => 'You are not the owner of this collection',
+                'error' => 'Forbidden',
+            ], Response::HTTP_FORBIDDEN);
         }
 
         try {
@@ -114,6 +95,17 @@ class CollectionService
     public function deleteCollection($id)
     {
         $result = null;
+        $data['user_id'] = Auth::guard('api')->user()->id ? Auth::guard('api')->user()->id : Auth::id();
+
+        $collection = $this->collectionRepository->find($id);
+        if ($collection->user_id !== $data['user_id']) {
+            return response()->json([
+                'success' => false,
+                'message' => 'You are not the owner of this collection',
+                'error' => 'Forbidden',
+            ], Response::HTTP_FORBIDDEN);
+        }
+
         try {
             $result = $this->collectionRepository->delete($id);
         } catch (\Exception $e) {

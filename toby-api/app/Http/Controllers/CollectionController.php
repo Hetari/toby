@@ -29,9 +29,7 @@ class CollectionController extends Controller
             $result = $this->collectionService->getAllCollections($relations);
         }
 
-        // Ensure $result is always wrapped in a response
         if ($result instanceof \Illuminate\Http\JsonResponse) {
-            // If it's already a JsonResponse, return it as is
             return $result;
         }
 
@@ -49,7 +47,23 @@ class CollectionController extends Controller
     {
         Cache::forget('collections.all');
 
-        $result = $this->collectionService->createCollection($request->all());
+        $data = $request->all();
+        $validator = Validator::make($data, [
+            'title' => 'required|string|max:255',
+            'is_fav' => 'nullable|boolean',
+            'tag_id' => 'nullable|exists:tags,id',
+            'description' => 'nullable|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid input',
+                'errors' => $validator->errors(),
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        $result = $this->collectionService->createCollection($data);
 
         if ($result instanceof \Illuminate\Http\JsonResponse) {
             return $result;
@@ -68,7 +82,22 @@ class CollectionController extends Controller
         Cache::forget('collections.all');
         Cache::forget('collections.find.' . $id);
 
-        $result = $this->collectionService->updateCollection($id, $request->all());
+        $data = $request->all();
+        $validator = Validator::make($data, [
+            'title' => 'required|string|max:255',
+            'is_fav' => 'nullable|boolean',
+            'tag_id' => 'nullable|exists:tags,id',
+            'description' => 'nullable|string',
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid input',
+                'errors' => $validator->errors(),
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        $result = $this->collectionService->updateCollection($id, $data);
         if ($result instanceof \Illuminate\Http\JsonResponse) {
             return $result;
         }
