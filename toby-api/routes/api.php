@@ -33,9 +33,8 @@ Route::middleware(['isAuthenticated'])->group(function () {
     Route::delete('/tabs/{id}', [TabController::class, 'destroy']); // Delete a tab by ID
 
     // Routes for CollectionController
-    Route::get('/collections', [CollectionController::class, 'index']); // Get all collections
+    Route::get('/collections/{id?}', [CollectionController::class, 'index']); // Get all collections
     Route::post('/collections', [CollectionController::class, 'store']); // Create a new collection
-    Route::get('/collections/{id}', [CollectionController::class, 'index']); // Get a specific collection by ID
     Route::put('/collections/{id}', [CollectionController::class, 'update']); // Update a collection by ID
     Route::delete('/collections/{id}', [CollectionController::class, 'destroy']); // Delete a collection by ID
 });

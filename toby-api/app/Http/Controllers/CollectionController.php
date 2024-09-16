@@ -45,14 +45,11 @@ class CollectionController extends Controller
     // Store a new collection
     public function store(Request $request)
     {
-        Cache::forget('collections.all');
-
-        $data = $request->all();
-        $validator = Validator::make($data, [
-            'title' => 'required|string|max:255',
-            'is_fav' => 'nullable|boolean',
-            'tag_id' => 'nullable|exists:tags,id',
-            'description' => 'nullable|string',
+        $validator = Validator::make($request->all(), [
+            'title' => ['required', 'string', 'max:255', 'min:3'],
+            'is_fav' => ['nullable', 'boolean'],
+            'tag_id' => ['nullable', 'exists:tags,id'],
+            'description' => ['nullable', 'string'],
         ]);
 
         if ($validator->fails()) {
@@ -63,7 +60,7 @@ class CollectionController extends Controller
             ], Response::HTTP_BAD_REQUEST);
         }
 
-        $result = $this->collectionService->createCollection($data);
+        $result = $this->collectionService->createCollection($request->all());
 
         if ($result instanceof \Illuminate\Http\JsonResponse) {
             return $result;
@@ -82,12 +79,11 @@ class CollectionController extends Controller
         Cache::forget('collections.all');
         Cache::forget('collections.find.' . $id);
 
-        $data = $request->all();
-        $validator = Validator::make($data, [
-            'title' => 'required|string|max:255',
-            'is_fav' => 'nullable|boolean',
-            'tag_id' => 'nullable|exists:tags,id',
-            'description' => 'nullable|string',
+        $validator = Validator::make($request->all(), [
+            'title' => ['required', 'string', 'max:255', 'min:3'],
+            'is_fav' => ['nullable', 'boolean'],
+            'tag_id' => ['nullable', 'exists:tags,id'],
+            'description' => ['nullable', 'string'],
         ]);
         if ($validator->fails()) {
             return response()->json([
@@ -97,7 +93,7 @@ class CollectionController extends Controller
             ], Response::HTTP_BAD_REQUEST);
         }
 
-        $result = $this->collectionService->updateCollection($id, $data);
+        $result = $this->collectionService->updateCollection($id, $request->all());
         if ($result instanceof \Illuminate\Http\JsonResponse) {
             return $result;
         }
