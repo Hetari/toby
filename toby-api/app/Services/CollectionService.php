@@ -4,7 +4,6 @@ namespace App\Services;
 
 use App\Repositories\CollectionRepository;
 use App\Repositories\CachedCollectionRepository;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 

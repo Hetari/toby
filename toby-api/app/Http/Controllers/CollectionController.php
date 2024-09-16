@@ -21,8 +21,21 @@ class CollectionController extends Controller
     }
 
 
-    public function index($id = null, $relations = null)
+    public function index(string $id = null, array $relations = null)
     {
+        $validator = Validator::make(['id' => $id], [
+            'id' => ['nullable', 'exists:collections,id'],
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid input',
+                'errors' => $validator->errors(),
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+
         if ($id) {
             $result = $this->collectionService->getCollectionById($id, $relations);
         } else {
@@ -93,6 +106,17 @@ class CollectionController extends Controller
             ], Response::HTTP_BAD_REQUEST);
         }
 
+        $idValidator = Validator::make(['id' => $id], [
+            'id' => ['required', 'exists:collections,id'],
+        ]);
+        if ($idValidator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Not found',
+                'errors' => $idValidator->errors(),
+            ], Response::HTTP_NOT_FOUND);
+        }
+
         $result = $this->collectionService->updateCollection($id, $request->all());
         if ($result instanceof \Illuminate\Http\JsonResponse) {
             return $result;
@@ -110,6 +134,17 @@ class CollectionController extends Controller
     {
         Cache::forget('collections.all');
         Cache::forget('collections.find.' . $id);
+
+        $idValidator = Validator::make(['id' => $id], [
+            'id' => ['required', 'exists:collections,id'],
+        ]);
+        if ($idValidator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Not found',
+                'errors' => $idValidator->errors(),
+            ], Response::HTTP_NOT_FOUND);
+        }
 
         $result = $this->collectionService->deleteCollection($id);
         if ($result instanceof \Illuminate\Http\JsonResponse) {

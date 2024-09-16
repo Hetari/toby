@@ -42,20 +42,6 @@ class TabService
 
     public function createTab($data)
     {
-        $validator = Validator::make($data, [
-            'title' => 'required|string|max:255',
-            'url' => 'required|url',
-            'collection_id' => 'required|exists:collections,id',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Invalid input',
-                'errors' => $validator->errors(),
-            ], Response::HTTP_BAD_REQUEST);
-        }
-
         $data['user_id'] =
             Auth::guard('api')->user()->id ? Auth::guard('api')->user()->id : Auth::id();
 
@@ -78,19 +64,7 @@ class TabService
 
     public function updateTab($id, $data)
     {
-        $validator = Validator::make($data, [
-            'title' => 'sometimes|string|max:255',
-            'url' => 'sometimes|url',
-            'collection_id' => 'sometimes|exists:collections,id',
-        ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Invalid input',
-                'errors' => $validator->errors(),
-            ], Response::HTTP_BAD_REQUEST);
-        }
 
         try {
             $this->tabRepository->update($id, $data);
