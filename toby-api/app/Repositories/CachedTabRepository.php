@@ -13,7 +13,7 @@ class CachedTabRepository extends TabRepository
         $this->tabRepository = $tabRepository;
     }
 
-    public function all(array $relations = [])
+    public function all(array $relations = null)
     {
         $cacheKey = 'tabs.all';
         if (Cache::has($cacheKey)) {
@@ -22,33 +22,27 @@ class CachedTabRepository extends TabRepository
             $fromCache = false;
         }
 
-        return [
-            'data' => Cache::remember($cacheKey, 60, function () use ($relations) {
-                return $this->tabRepository->all($relations);
-            }),
-            'from_cache' => $fromCache
-        ];
+        return Cache::remember($cacheKey, 3600, function () use ($relations) {
+            return $this->tabRepository->all($relations);
+        });
 
         // return Cache::remember('tabs', 3600, function () use ($relations) {
         //     return $this->tabRepository->all($relations);
         // });
     }
 
-    public function find($id, array $relations = [])
+    public function find($id, array $relations = null)
     {
-        $cacheKey = 'tabs.all';
+        $cacheKey = 'tabs.find.' . $id;
         if (Cache::has($cacheKey)) {
             $fromCache = true;
         } else {
             $fromCache = false;
         }
 
-        return [
-            'data' => Cache::remember($cacheKey, 60, function () use ($id, $relations) {
-                return $this->tabRepository->find($id, $relations);
-            }),
-            'from_cache' => $fromCache
-        ];
+        return Cache::remember($cacheKey, 3600, function () use ($id, $relations) {
+            return $this->tabRepository->find($id, $relations);
+        });
 
         // return Cache::remember('tab_' . $id, 3600, function () use ($id, $relations) {
         //     return $this->tabRepository->find($id, $relations);

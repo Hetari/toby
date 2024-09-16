@@ -3,77 +3,45 @@
 namespace App\Services;
 
 use App\Repositories\CollectionRepository;
-use Illuminate\Support\Facades\Validator;
+use App\Repositories\CachedCollectionRepository;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
 class CollectionService
 {
     protected $collectionRepository;
+    protected $cacheCollectionRepository;
 
-    public function __construct(CollectionRepository $collectionRepository)
+    public function __construct(CollectionRepository $collectionRepository, CachedCollectionRepository $cacheCollectionRepository)
     {
         $this->collectionRepository = $collectionRepository;
+        $this->cacheCollectionRepository = $cacheCollectionRepository;
     }
 
-    public function getAllCollections()
+    public function getAllCollections($relations)
     {
-        return $this->collectionRepository->all();
+        return $this->cacheCollectionRepository->all(['tabs']);
     }
 
-    public function getAllCollectionsWithTags()
-    {
-        // TODO: Implement getAllCollectionsWithTags() method.
-    }
-
-    public function getCollectionById($id)
-    {
+    public function getCollectionById(
+        $id,
+        $relations
+    ) {
         $result = null;
         try {
-            $result = $this->collectionRepository->find($id);
+            $result = $this->cacheCollectionRepository->find($id, $relations);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Error creating tag',
+                'message' => 'Error getting collection',
                 'error' => $e->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-        return $result;
-    }
-
-    public function getCollectionByIdWithCollection($id)
-    {
-        $result = null;
-        try {
-            $result = $this->collectionRepository->find($id, ['collection']);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Error creating tag',
-                'error' => $e->getMessage(),
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
-
         return $result;
     }
 
     public function createCollection($data)
     {
-        $validator = Validator::make($data, [
-            'title' => 'required|string|max:255',
-            'is_fav' => 'nullable|boolean',
-            'tag_id' => 'nullable|exists:tags,id',
-            'description' => 'nullable|string',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Invalid input',
-                'errors' => $validator->errors(),
-            ], Response::HTTP_BAD_REQUEST);
-        }
-
         $data['user_id'] = Auth::guard('api')->user()->id ? Auth::guard('api')->user()->id : Auth::id();
 
         try {
@@ -81,7 +49,7 @@ class CollectionService
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Error creating tag',
+                'message' => 'Error creating collection',
                 'error' => $e->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
@@ -95,19 +63,15 @@ class CollectionService
 
     public function updateCollection($id, $data)
     {
-        $validator = Validator::make($data, [
-            'title' => 'required|string|max:255',
-            'is_fav' => 'nullable|boolean',
-            'tag_id' => 'nullable|exists:tags,id',
-            'description' => 'nullable|string',
-        ]);
+        $data['user_id'] = Auth::guard('api')->user()->id ? Auth::guard('api')->user()->id : Auth::id();
 
-        if ($validator->fails()) {
+        $collection = $this->collectionRepository->find($id);
+        if ($collection->user_id !== $data['user_id']) {
             return response()->json([
                 'success' => false,
-                'message' => 'Invalid input',
-                'errors' => $validator->errors(),
-            ], Response::HTTP_BAD_REQUEST);
+                'message' => 'You are not the owner of this collection',
+                'error' => 'Forbidden',
+            ], Response::HTTP_FORBIDDEN);
         }
 
         try {
@@ -115,10 +79,11 @@ class CollectionService
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Error creating tag',
+                'message' => 'Error updating collection',
                 'error' => $e->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
+
         return response()->json([
             'success' => true,
             'message' => 'Collection updated successfully',
@@ -129,6 +94,17 @@ class CollectionService
     public function deleteCollection($id)
     {
         $result = null;
+        $data['user_id'] = Auth::guard('api')->user()->id ? Auth::guard('api')->user()->id : Auth::id();
+
+        $collection = $this->collectionRepository->find($id);
+        if ($collection->user_id !== $data['user_id']) {
+            return response()->json([
+                'success' => false,
+                'message' => 'You are not the owner of this collection',
+                'error' => 'Forbidden',
+            ], Response::HTTP_FORBIDDEN);
+        }
+
         try {
             $result = $this->collectionRepository->delete($id);
         } catch (\Exception $e) {
@@ -138,7 +114,6 @@ class CollectionService
                 'error' => $e->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-
         return $result;
     }
 }

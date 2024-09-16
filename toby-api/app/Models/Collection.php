@@ -24,4 +24,11 @@ class Collection extends Model
     {
         return $this->hasMany(Tab::class);
     }
+
+    public function toSearchableArray()
+    {
+        return [
+            'title' => $this->title,
+        ];
+    }
 }

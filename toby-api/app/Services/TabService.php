@@ -24,21 +24,6 @@ class TabService
         return $this->cacheTabRepository->all();
     }
 
-    public function getAllTabsWithCollection()
-    {
-        $result = null;
-        try {
-            $result = $this->cacheTabRepository->all(['collection']);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Error creating tag',
-                'error' => $e->getMessage(),
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
-        return $result;
-    }
-
     public function getTabById($id)
     {
         $result = null;
@@ -47,45 +32,16 @@ class TabService
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Error creating tag',
+                'message' => 'Error getting tab',
                 'error' => $e->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
         return $result;
     }
 
-    public function getTabByIdWithCollection($id)
-    {
-        $result = null;
-        try {
-            $result = $this->tabRepository->find($id, ['collection']);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Error creating tag',
-                'error' => $e->getMessage(),
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
-
-        return $result;
-    }
 
     public function createTab($data)
     {
-        $validator = Validator::make($data, [
-            'title' => 'required|string|max:255',
-            'url' => 'required|url',
-            'collection_id' => 'required|exists:collections,id',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Invalid input',
-                'errors' => $validator->errors(),
-            ], Response::HTTP_BAD_REQUEST);
-        }
-
         $data['user_id'] =
             Auth::guard('api')->user()->id ? Auth::guard('api')->user()->id : Auth::id();
 
@@ -94,7 +50,7 @@ class TabService
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Error creating tag',
+                'message' => 'Error creating tab',
                 'error' => $e->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
@@ -108,29 +64,19 @@ class TabService
 
     public function updateTab($id, $data)
     {
-        $validator = Validator::make($data, [
-            'title' => 'sometimes|string|max:255',
-            'url' => 'sometimes|url',
-            'collection_id' => 'sometimes|exists:collections,id',
-        ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Invalid input',
-                'errors' => $validator->errors(),
-            ], Response::HTTP_BAD_REQUEST);
-        }
 
         try {
             $this->tabRepository->update($id, $data);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Error creating tag',
+                'message' => 'Error updating tab',
                 'error' => $e->getMessage(),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
+
+
         return response()->json([
             'success' => true,
             'message' => 'Tab updated successfully',
