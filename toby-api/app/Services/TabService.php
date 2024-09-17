@@ -64,8 +64,6 @@ class TabService
 
     public function updateTab($id, $data)
     {
-
-
         try {
             $this->tabRepository->update($id, $data);
         } catch (\Exception $e) {

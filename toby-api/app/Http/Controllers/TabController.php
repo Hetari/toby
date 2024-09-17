@@ -100,6 +100,7 @@ class TabController extends Controller
             ], Response::HTTP_BAD_REQUEST);
         }
 
+
         $idValidator = Validator::make(['id' => $id], [
             'id' => ['required', 'exists:tabs,id'],
         ]);

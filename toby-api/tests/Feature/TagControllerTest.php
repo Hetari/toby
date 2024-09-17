@@ -64,10 +64,9 @@ class TagControllerTest extends TestCase
         $response = $this->actingAs($this->user)->getJson('/api/tags');
 
         $response->assertStatus(Response::HTTP_OK)
-            // ->assertJson([
-            //     'data' => [],
-            //     'from_cache' => false,
-            // ])
+            ->assertJson([
+                'success' => true,
+            ])
         ;
     }
 
@@ -113,7 +112,7 @@ class TagControllerTest extends TestCase
         $response->assertStatus(Response::HTTP_NOT_FOUND)
             ->assertJson([
                 'success' => false,
-                'message' => 'Tag not found',
+                'message' => 'Not found',
             ]);
     }
 
@@ -139,7 +138,7 @@ class TagControllerTest extends TestCase
         $response->assertStatus(Response::HTTP_NOT_FOUND)
             ->assertJson([
                 'success' => false,
-                'message' => 'Tag not found',
+                'message' => 'Not found',
             ]);
     }
 

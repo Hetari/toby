@@ -42,16 +42,6 @@ class TagService
         try {
             $result = $this->cacheTagRepository->find($id);
         } catch (\Exception $e) {
-            // TODO: do this to all the services
-            if (!isset($result)) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Tag not found',
-                    'errors' => $e->getMessage(),
-                    'data' => [],
-                ], Response::HTTP_NOT_FOUND);
-            }
-
             return response()->json([
                 'success' => false,
                 'message' => 'Error getting tag',
@@ -95,15 +85,6 @@ class TagService
         try {
             $result = $this->tagRepository->update($id, $data);
         } catch (\Exception $e) {
-            if (!isset($result)) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Tag not found',
-                    'errors' => $e->getMessage(),
-                    'data' => [],
-                ], Response::HTTP_NOT_FOUND);
-            }
-
             return response()->json([
                 'success' => false,
                 'message' => 'Error creating tag',
@@ -128,7 +109,7 @@ class TagService
             if (!isset($result)) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Tag not found',
+                    'message' => 'Not found',
                     'errors' => $e->getMessage(),
                     'data' => [],
                 ], Response::HTTP_NOT_FOUND);

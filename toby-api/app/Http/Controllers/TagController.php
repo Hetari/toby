@@ -49,11 +49,10 @@ class TagController extends Controller
         ], Response::HTTP_CREATED);
     }
 
-    // Get All Tags, on a Collection by ID
     public function index($id = null, $relations = null)
     {
         $validator = Validator::make(['id' => $id], [
-            'id' => ['nullable', 'exists:collections,id'],
+            'id' => ['nullable', 'exists:tags,id'],
         ]);
 
         if ($validator->fails()) {
@@ -133,7 +132,7 @@ class TagController extends Controller
         }
 
         $idValidator = Validator::make(['id' => $id], [
-            'id' => ['required', 'exists:tabs,id'],
+            'id' => ['required', 'exists:tags,id'],
         ]);
         if ($idValidator->fails()) {
             return response()->json([

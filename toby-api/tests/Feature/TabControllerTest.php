@@ -77,7 +77,8 @@ class TabControllerTest extends TestCase
     {
         $response = $this->actingAs($this->user)->putJson("/api/tabs/{$this->tab->id}", [
             'title' => 'Updated Tab',
-            'url' => 'https://updated-url.com',
+            'url' => 'https://www.chatgpt.com/',
+            'collection_id' => $this->collection->id,
         ]);
 
         $response->assertStatus(Response::HTTP_OK);
@@ -85,7 +86,7 @@ class TabControllerTest extends TestCase
         $this->assertDatabaseHas('tabs', [
             'id' => $this->tab->id,
             'title' => 'Updated Tab',
-            'url' => 'https://updated-url.com',
+            'url' => 'https://www.chatgpt.com/',
         ]);
     }
 }

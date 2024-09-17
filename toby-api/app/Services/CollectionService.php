@@ -23,10 +23,8 @@ class CollectionService
         return $this->cacheCollectionRepository->all(['tabs']);
     }
 
-    public function getCollectionById(
-        $id,
-        $relations
-    ) {
+    public function getCollectionById($id, $relations)
+    {
         $result = null;
         try {
             $result = $this->cacheCollectionRepository->find($id, $relations);
