@@ -26,7 +26,6 @@ class CollectionController extends Controller
         $validator = Validator::make(['id' => $id], [
             'id' => ['nullable', 'exists:collections,id'],
         ]);
-
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
