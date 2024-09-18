@@ -9,16 +9,15 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\Response;
+use App\Services\CollectionService;
 
 class CollectionController extends Controller
 {
-    // Get all collections
-    public function index(Request $request, $id = null)
+    protected $collectionService;
+
+    public function __construct(CollectionService $collectionService)
     {
-        try {
-            $collections = Collection::with('tags')
-                ->where('user_id', $id ?? $request->id)
-                ->get();
+        $result = $this->collectionService = $collectionService;
 
         return response()->json($result);
     }
@@ -29,12 +28,32 @@ class CollectionController extends Controller
         $validator = Validator::make(['id' => $id], [
             'id' => ['nullable', 'exists:collections,id'],
         ]);
+
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
-                'message' => $e->getMessage(),
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+                'message' => 'Invalid input',
+                'errors' => $validator->errors(),
+            ], Response::HTTP_NOT_FOUND);
         }
+
+
+        if ($id) {
+            $result = $this->collectionService->getCollectionById($id, $relations);
+        } else {
+            $result = $this->collectionService->getAllCollections($relations);
+        }
+
+        if ($result instanceof \Illuminate\Http\JsonResponse) {
+            return $result;
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Collections retrieved successfully',
+            'data' => $result,
+            'errors' => [],
+        ], Response::HTTP_OK);
     }
 
     // Store a new collection
