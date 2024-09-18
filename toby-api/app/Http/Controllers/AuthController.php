@@ -4,66 +4,73 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
+    // Register a new user
     public function register(Request $request)
     {
         try {
             $data = $request->validate([
-                'name' => ['required', 'string', 'max:255'],
-                'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-                'password' => ['required', 'string', 'min:4'],
+                'name' => 'required|string|max:255',
+                'email' => 'required|string|email|max:255|unique:users',
+                'password' => 'required|string|min:4',
             ]);
 
-            // TODO: fix this
-            // if (User::where('email', $data['email'])->exists()) {
-            //     return response()->json(['message' => 'Email already exists'], 400);
-            // }
+            $user = User::create([
+                'name' => $data['name'],
+                'email' => $data['email'],
+                'password' => Hash::make($data['password']),
+            ]);
 
-            $user = User::Create($data);
             $token = $user->createToken('auth_token')->plainTextToken;
-
-            $data['access_token'] = $token;
-            $data['token_type'] = 'Bearer';
 
             return response()->json([
                 'success' => true,
-                'message' => 'User created successfully',
-                'error' => [],
-                'data' => $data
-            ], Response::HTTP_CREATED);
+                'access_token' => $token,
+                'token_type' => 'Bearer',
+            ], 201);
         } catch (\Throwable $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Error creating user',
-                'error' => $e->getMessage(),
-                'data' => []
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+                'message' => $e->getMessage(),
+            ], 400);
         }
     }
 
+    // Login existing user
     public function login(Request $request)
     {
-        $data = $request->validate([
-            'email' => ['required', 'string', 'email', 'max:255'],
-            'password' => ['required', 'string', 'min:4'],
-        ]);
+        try {
+            $data = $request->validate([
+                'email' => 'required|string|email|max:255',
+                'password' => 'required|string|min:4',
+            ]);
 
-        $user = User::where('email', $data['email'])->first();
-        if (!$user || !Hash::check($data['password'], $user->password)) {
-            // return response([
-            //     'message' => 'The provided credentials are incorrect.',
-            // ], 401);
+            $user = User::where('email', $data['email'])->first();
+
+            if ($user && Hash::check($data['password'], $user->password)) {
+                $token = $user->createToken('auth_token')->plainTextToken;
+
+                return response()->json([
+                    'success' => true,
+                    'access_token' => $token,
+                    'token_type' => 'Bearer',
+                    'user_id' => $user->id,
+                ], 200);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Invalid credentials',
+                ], 401);
+            }
+        } catch (\Throwable $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Invalid login details',
-                'error' => [],
-                'data' => []
-            ], Response::HTTP_UNAUTHORIZED);
+                'message' => $e->getMessage(),
+            ], 400);
         }
 
         $token = $user->createToken('auth_token')->plainTextToken;
@@ -78,6 +85,6 @@ class AuthController extends Controller
             'message' => 'User logged in successfully',
             'error' => [],
             'data' => $data
-        ], Response::HTTP_OK);
+        ], 400);
     }
 }

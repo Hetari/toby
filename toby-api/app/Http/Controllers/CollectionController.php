@@ -2,20 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\CollectionService;
+use App\Models\Collection;
+use App\Models\Tag;
+use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
-
+use Symfony\Component\HttpFoundation\Response;
 
 class CollectionController extends Controller
 {
-    protected $collectionService;
-
-    public function __construct(CollectionService $collectionService)
+    // Get all collections
+    public function index(Request $request, $id = null)
     {
-        $result = $this->collectionService = $collectionService;
+        try {
+            $collections = Collection::with('tags')
+                ->where('user_id', $id ?? $request->id)
+                ->get();
 
         return response()->json($result);
     }
@@ -29,39 +32,20 @@ class CollectionController extends Controller
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
-                'message' => 'Invalid input',
-                'errors' => $validator->errors(),
-            ], Response::HTTP_NOT_FOUND);
+                'message' => $e->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-
-
-        if ($id) {
-            $result = $this->collectionService->getCollectionById($id, $relations);
-        } else {
-            $result = $this->collectionService->getAllCollections($relations);
-        }
-
-        if ($result instanceof \Illuminate\Http\JsonResponse) {
-            return $result;
-        }
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Collections retrieved successfully',
-            'data' => $result,
-            'errors' => [],
-        ], Response::HTTP_OK);
     }
-
 
     // Store a new collection
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'title' => ['required', 'string', 'max:255', 'min:3'],
-            'is_fav' => ['nullable', 'boolean'],
-            'tag_id' => ['nullable', 'exists:tags,id'],
-            'description' => ['nullable', 'string'],
+            'title' => 'required|string|max:255',
+            'is_fav' => 'nullable|boolean',
+            'tagId' => 'nullable|exists:tags,id',
+            'description' => 'nullable|string',
+            'user_id' => 'required|exists:users,id'
         ]);
 
         if ($validator->fails()) {
@@ -72,31 +56,41 @@ class CollectionController extends Controller
             ], Response::HTTP_BAD_REQUEST);
         }
 
-        $result = $this->collectionService->createCollection($request->all());
+        try {
+            $collection = Collection::create([
+                'title' => $request->title,
+                'is_fav' => $request->is_fav ?? false,
+                'description' => $request->description,
+                'user_id' => $request->user_id,
+            ]);
 
-        if ($result instanceof \Illuminate\Http\JsonResponse) {
-            return $result;
+            if ($request->tagId) {
+                $collection->tags()->attach($request->tagId);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Collection created',
+                'data' => $collection,
+            ], Response::HTTP_CREATED);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], Response::HTTP_BAD_REQUEST);
         }
-        return response()->json([
-            'success' => true,
-            'message' => 'Collection created successfully',
-            'data' => $result,
-            'errors' => [],
-        ], Response::HTTP_OK);
     }
 
     // Update a collection
     public function update(Request $request, $id)
     {
-        Cache::forget('collections.all');
-        Cache::forget('collections.find.' . $id);
-
         $validator = Validator::make($request->all(), [
-            'title' => ['required', 'string', 'max:255', 'min:3'],
-            'is_fav' => ['nullable', 'boolean'],
-            'tag_id' => ['nullable', 'exists:tags,id'],
-            'description' => ['nullable', 'string'],
+            'title' => 'required|string|max:255',
+            'tagId' => 'nullable|exists:tags,id',
+            'description' => 'nullable|string',
+            'is_fav' => 'nullable|boolean',
         ]);
+
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
@@ -105,56 +99,63 @@ class CollectionController extends Controller
             ], Response::HTTP_BAD_REQUEST);
         }
 
-        $idValidator = Validator::make(['id' => $id], [
-            'id' => ['required', 'exists:collections,id'],
-        ]);
-        if ($idValidator->fails()) {
+        try {
+            $collection = Collection::where('id', $id)->where('user_id', Auth::id())->first();
+
+            if (!$collection) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Collection not found',
+                ], Response::HTTP_NOT_FOUND);
+            }
+
+            $collection->update([
+                'title' => $request->title,
+                'is_fav' => $request->is_fav ?? $collection->is_fav,
+                'description' => $request->description ?? $collection->description,
+            ]);
+
+            if ($request->tagId) {
+                $collection->tags()->sync($request->tagId);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Collection updated',
+                'data' => $collection,
+            ], Response::HTTP_OK);
+        } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Not found',
-                'errors' => $idValidator->errors(),
-            ], Response::HTTP_NOT_FOUND);
+                'message' => $e->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-
-        $result = $this->collectionService->updateCollection($id, $request->all());
-        if ($result instanceof \Illuminate\Http\JsonResponse) {
-            return $result;
-        }
-        return response()->json([
-            'success' => true,
-            'message' => 'Collection updated successfully',
-            'data' => $result,
-            'errors' => [],
-        ], Response::HTTP_OK);
     }
 
     // Delete a collection
     public function destroy($id)
     {
-        Cache::forget('collections.all');
-        Cache::forget('collections.find.' . $id);
+        try {
+            $collection = Collection::where('id', $id)->where('user_id', Auth::id())->first();
 
-        $idValidator = Validator::make(['id' => $id], [
-            'id' => ['required', 'exists:collections,id'],
-        ]);
-        if ($idValidator->fails()) {
+            if (!$collection) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Collection not found',
+                ], Response::HTTP_NOT_FOUND);
+            }
+
+            $collection->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Collection deleted',
+            ], Response::HTTP_OK);
+        } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Not found',
-                'errors' => $idValidator->errors(),
-            ], Response::HTTP_NOT_FOUND);
+                'message' => $e->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-
-        $result = $this->collectionService->deleteCollection($id);
-        if ($result instanceof \Illuminate\Http\JsonResponse) {
-            return $result;
-        }
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Collection deleted successfully',
-            'data' => $result,
-            'errors' => [],
-        ], Response::HTTP_OK);
     }
 }
