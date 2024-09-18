@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\Response;
 use App\Services\CollectionService;
+use Illuminate\Support\Facades\Cache;
 
 class CollectionController extends Controller
 {
@@ -59,12 +60,14 @@ class CollectionController extends Controller
     // Store a new collection
     public function store(Request $request)
     {
+        Cache::forget('collections.all');
+
+
         $validator = Validator::make($request->all(), [
-            'title' => 'required|string|max:255',
-            'is_fav' => 'nullable|boolean',
-            'tagId' => 'nullable|exists:tags,id',
-            'description' => 'nullable|string',
-            'user_id' => 'required|exists:users,id'
+            'title' => ['required', 'string', 'max:255', 'min:3'],
+            'is_fav' => ['nullable', 'boolean'],
+            'tag_id' => ['nullable', 'exists:tags,id'],
+            'description' => ['nullable', 'string'],
         ]);
 
         if ($validator->fails()) {
