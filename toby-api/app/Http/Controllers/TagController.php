@@ -22,7 +22,7 @@ class TagController extends Controller
         Cache::forget('tags.all');
 
         $validator = Validator::make($request->all(), [
-            'title' => ['required', 'string', 'max:255', 'min:3'],
+            'title' => ['required', 'string', 'max:255'],
         ]);
 
 
@@ -119,7 +119,7 @@ class TagController extends Controller
         Cache::forget('tags.find.' . $id);
 
         $validator = Validator::make($request->all(), [
-            'title' => ['required', 'string', 'max:255', 'min:3'],
+            'title' => ['required', 'string', 'max:255'],
         ]);
 
         if ($validator->fails()) {

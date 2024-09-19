@@ -107,10 +107,10 @@ class CollectionController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'title' => 'required|string|max:255',
-            'tagId' => 'nullable|exists:tags,id',
-            'description' => 'nullable|string',
-            'is_fav' => 'nullable|boolean',
+            'title' => ['required', 'string', 'max:255'],
+            'is_fav' => ['nullable', 'boolean'],
+            'tag_id' => ['nullable', 'exists:tags,id'],
+            'description' => ['nullable', 'string'],
         ]);
 
         if ($validator->fails()) {

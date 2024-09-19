@@ -54,7 +54,7 @@ class TabController extends Controller
         Cache::forget('tabs.all');
 
         $validator = Validator::make($request->all(), [
-            'title' => ['required', 'string', 'max:255', 'min:3'],
+            'title' => ['required', 'string', 'max:255'],
             'url' => ['required', 'url'],
             'collection_id' => ['required', 'exists:collections,id'],
         ]);
@@ -87,7 +87,7 @@ class TabController extends Controller
         Cache::forget('tabs.find.' . $id);
 
         $validator = Validator::make($request->all(), [
-            'title' => ['required', 'string', 'max:255', 'min:3'],
+            'title' => ['required', 'string', 'max:255'],
             'url' => ['required', 'url'],
             'collection_id' => ['required', 'exists:collections,id'],
         ]);
