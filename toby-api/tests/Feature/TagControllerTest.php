@@ -35,6 +35,7 @@ class TagControllerTest extends TestCase
     {
         $response = $this->actingAs($this->user)->postJson('/api/tags', [
             'title' => 'New Tagskdhsd',
+            'collection_id' => $this->collection->id,
         ]);
 
         $response->assertStatus(Response::HTTP_CREATED)->assertJson([
@@ -82,6 +83,7 @@ class TagControllerTest extends TestCase
     {
         $response = $this->actingAs($this->user)->putJson("/api/tags/{$this->tag->id}", [
             'title' => 'Updated Tag',
+            'collection_id' => $this->collection->id,
         ]);
 
         $response->assertStatus(Response::HTTP_OK)
