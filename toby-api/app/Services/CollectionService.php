@@ -20,7 +20,7 @@ class CollectionService
 
     public function getAllCollections($relations)
     {
-        return $this->cacheCollectionRepository->all(['tabs']);
+        return $this->cacheCollectionRepository->all(['tabs', 'tags']);
     }
 
     public function getCollectionById($id, $relations)

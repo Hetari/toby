@@ -14,6 +14,7 @@ class Tab extends Model
     {
         return $this->belongsTo(Collection::class);
     }
+
     public function toSearchableArray()
     {
         return [

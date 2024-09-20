@@ -23,6 +23,7 @@ class TagController extends Controller
 
         $validator = Validator::make($request->all(), [
             'title' => ['required', 'string', 'max:255'],
+            'collection_id' => ['nullable', 'exists:collections,id'],
         ]);
 
 
@@ -53,6 +54,7 @@ class TagController extends Controller
     {
         $validator = Validator::make(['id' => $id], [
             'id' => ['nullable', 'exists:tags,id'],
+            'collection_id' => ['nullable', 'exists:collections,id'],
         ]);
 
         if ($validator->fails()) {
@@ -89,6 +91,7 @@ class TagController extends Controller
 
         $validator = Validator::make(['id' => $id], [
             'id' => ['required', 'exists:tags,id'],
+            'collection_id' => ['nullable', 'exists:collections,id'],
         ]);
 
         if ($validator->fails()) {
@@ -120,6 +123,7 @@ class TagController extends Controller
 
         $validator = Validator::make($request->all(), [
             'title' => ['required', 'string', 'max:255'],
+            'collection_id' => ['nullable', 'exists:collections,id'],
         ]);
 
         if ($validator->fails()) {

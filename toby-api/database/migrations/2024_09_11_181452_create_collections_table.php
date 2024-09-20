@@ -18,16 +18,10 @@ return new class extends Migration
             $table->boolean('is_fav')->default(false);
 
             $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('tag_id')->nullable();
 
             $table->foreign('user_id')
                 ->references('id')
                 ->on('users')
-                ->cascadeOnDelete()
-                ->cascadeOnUpdate();
-            $table->foreign('tag_id')
-                ->references('id')
-                ->on('tags')
                 ->cascadeOnDelete()
                 ->cascadeOnUpdate();
 
