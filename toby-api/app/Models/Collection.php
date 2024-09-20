@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Collection extends Model
 {
     use HasFactory;
-    protected $fillable = ['title', 'is_fav', 'description', 'user_id', 'tag_id', 'user'];
+    protected $fillable = ['title', 'is_fav', 'description', 'user_id', 'user'];
 
     public function user()
     {
@@ -17,7 +17,7 @@ class Collection extends Model
 
     public function tags()
     {
-        return $this->belongsToMany(Tag::class);
+        return $this->hasMany(Tag::class);
     }
 
     public function tabs()
