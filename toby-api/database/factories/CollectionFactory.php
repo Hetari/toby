@@ -21,7 +21,6 @@ class CollectionFactory extends Factory
         return [
             'title' => $this->faker->word(),
             'is_fav' => $this->faker->boolean(),
-            'tag_id' => Tag::factory(),
             'user_id' => User::factory(),
         ];
     }

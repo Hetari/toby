@@ -9,7 +9,12 @@ class Tag extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'user_id'];
+    protected $fillable = ['title', 'user_id', 'collection_id'];
+
+    public function collection()
+    {
+        return $this->belongsTo(Collection::class);
+    }
 
     public function toSearchableArray()
     {
