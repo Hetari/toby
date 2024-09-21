@@ -1,6 +1,6 @@
 <template>
     <!-- TODO: make it responsive -->
-    <div  class="col-span-5 grid  bg-primary content-between border-r-1 border-l-1 border-b-1">
+    <div  class="col-span-4 grid  bg-primary content-between border-r-1 border-l-1 border-b-1">
         <div class="flex flex-col w-full">
             <div class="flex justify-between w-full pt-4 px-2 pb-4 pr-4 ">
                 <p class="text-2xl pl-2 font-medium">Ammar</p>

@@ -1,6 +1,6 @@
 <template>
   <!-- TODO: make it responsive -->
-  <div  class="col-span-18 bg-primary content-between  border-r-1 border-l-1 border-b-1">
+  <div  class="col-span-19 bg-primary content-between  border-r-1 border-l-1 border-b-1">
       <div class="flex flex-col w-full">
           <div class="flex justify-between w-full pt-4 px-4 pb-[16px] pr-4 border-b-1">
               <p class="text-2xl pl-2">My Collections <span class="text-sm pl-1 font-light text-[#7C7C9A]">| </span> <span class="text-sm font-light">{{ x }}</span> <span class="text-sm font-light"> collections</span></p>
@@ -47,7 +47,7 @@ let x = 0;
     border-right-width: 1px;
     border-color: rgb(100, 100, 100);
 }
-.col-span-18 {
-    grid-column: span 18 / span 18;
+.col-span-19 {
+    grid-column: span 19 / span 19;
 }
 </style>
