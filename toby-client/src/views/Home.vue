@@ -1,5 +1,5 @@
 <template>
-  <div class="grid grid-cols-10">
+  <div class="grid grid-cols-24">
      <sideBar/>
 
      <Users />
