@@ -1,4 +1,4 @@
-import { createApp } from "vue";
+import { createApp, reactive } from "vue";
 import "./style.css";
 import router from "./router"; // import the router
 import App from "./App.vue";

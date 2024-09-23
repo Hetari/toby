@@ -10,13 +10,15 @@ onMounted(() => {
 
   // If no token is found, redirect to login
   if (!token) {
-    router.push("/login");
+    // router.push("/login");
   }
 });
 </script>
 
 <template>
-  <router-view />
+  <main class="">
+    <router-view />
+  </main>
 </template>
 
 <style scoped></style>
