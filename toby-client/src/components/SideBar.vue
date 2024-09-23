@@ -1,7 +1,7 @@
 <template>
 
     <!-- TODO: add tawindcss pritter plugin -->
-    <div class="py-[16px] col-span-1 columns-sm border content-between grid border-y-1 h-screen bg-primary">
+    <div class="py-[16px] col-span-1 columns-sm content-between grid border-x border-y border-rgbgray  h-screen bg-primary">
         <div class="">
             <div class=" flex justify-center cursor-pointer my-2">
                 <img src="../assets/vue.svg" alt="" class="size-10">
@@ -11,7 +11,7 @@
             </div>
         </div>
 
-        <div class=" font-light">
+        <div class="font-light">
             <div class=" flex justify-center items-center flex-col cursor-pointer my-4 hover:text-pink-500 pr-1 opacity-50">
                 <svg viewBox="0 0 24 24" focusable="false" class="chakra-icon css-1dapl4j size-6"><svg viewBox="0 0 16 24" focusable="false" class="chakra-icon css-onkibi"><path fill-rule="evenodd" clip-rule="evenodd" d="M0 6.57287C0 -1.86837 15.7936 -2.41303 15.7936 6.30049C15.7936 11.474 10.6201 11.2015 9.53056 16.1035C8.9858 18.5541 5.71815 18.2816 5.71815 15.5587C5.71815 10.9302 9.53056 10.6577 11.1641 7.66241C12.2536 5.48428 10.3469 3.30509 8.16878 3.30509C3.5402 3.30509 5.17348 8.47857 2.17818 8.47857C1.08863 8.47857 0 7.66146 0 6.57287ZM7.62387 24C4.35612 24 4.62858 19.099 7.62387 19.099C10.8916 19.099 10.8916 24 7.62387 24Z" fill="currentColor"></path></svg></svg>
                 <p>FAQ</p>
@@ -33,11 +33,5 @@
 </script>
 
 <style scoped>
-
-.border-y-1 {
-    border-top-width: 1px;
-    border-bottom-width: 1px;
-    border-color: rgb(100, 100, 100);
-}
 
 </style>

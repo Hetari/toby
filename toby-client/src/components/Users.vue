@@ -1,7 +1,8 @@
 <template>
     <!-- TODO: make it responsive -->
-    <div  class="col-span-4 grid  bg-primary content-between border-r-1 border-l-1 border-b-1">
+    <div class="col-span-4 grid  bg-primary content-between border-y border-rgbgray">
         <div class="flex flex-col w-full">
+            <!-- TODO: <a> to user account -->
             <div class="flex justify-between w-full pt-4 px-2 pb-4 pr-4 ">
                 <p class="text-2xl pl-2 font-medium">Ammar</p>
                 <button class="hover:text-pink-500">
@@ -9,13 +10,13 @@
                 </button>
             </div>
 
-            <div class="flex space-x-2 border-t-1 border-b-1 p-6  hover:text-pink-500">
+            <div class="flex space-x-2 border-t border-b border-rgbgray p-6  hover:text-pink-500">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="chakra-icon css-ugv5hc" focusable="false"><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0"></path><path d="M21 21l-6 -6"></path></svg>
                 <p class="text-xl opacity-90">Search</p>
             </div>
 
-            <div class="grid border-b-1 p-4 text-xl">
-                <div class="flex space-x-3 pb-4 pt-2 font-light hover:text-pink-500"> 
+            <div class="grid border-b border-rgbgray p-4 text-xl">
+                <div class="flex space-x-3 pb-4 pt-2 font-light hover:text-pink-500 cursor-pointer"> 
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="chakra-icon css-1pipko8" focusable="false"><path d="M9 15l6 -6"></path><path d="M11 6l.463 -.536a5 5 0 0 1 7.071 7.072l-.534 .464"></path><path d="M13 18l-.397 .534a5.068 5.068 0 0 1 -7.127 0a4.972 4.972 0 0 1 0 -7.071l.524 -.463"></path></svg>
                     <p class="opacity-90">To / Links</p>
                 </div>
@@ -43,7 +44,7 @@
          </div>
         </div>
 
-        <div class="pb-4 pt-3 pl-1 border-t-1 font-light">
+        <div class="pb-4 pt-3 pl-1 border-t border-rgbgray font-light">
             <div class="flex space-x-2 pt-2 p-2 hover:text-pink-500 opacity-90">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="chakra-icon css-ugv5hc" focusable="false"><path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0"></path><path d="M16 19h6"></path><path d="M19 16v6"></path><path d="M6 21v-2a4 4 0 0 1 4 -4h4"></path></svg>
                 <p>Invite members</p>
@@ -57,27 +58,11 @@
 </template>
 
 <script setup lang="ts">
-
 </script>
 
+<!-- TODO: refactoring this shit -->
 <style scoped>
-.border-t-1 {
-    border-top-width: 1px;
-    border-color: rgb(100, 100, 100);
-}
 
-.border-b-1 {
-    border-bottom-width: 1px;
-    border-color: rgb(100, 100, 100);
-}
-.border-l-1 {
-    border-left-width: 1px;
-    border-color: rgb(100, 100, 100);
-}
-.border-r-1 {
-    border-right-width: 1px;
-    border-color: rgb(100, 100, 100);
-}
 .col-span-2 {
     grid-column: span 2 / span 2;
 }
