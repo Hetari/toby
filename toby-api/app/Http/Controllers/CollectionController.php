@@ -21,9 +21,8 @@ class CollectionController extends Controller
     }
 
 
-    public function index(string $id = null, array $relations = null)
+    public function index(string $id = null, array $relations = ['tabs', 'tags'])
     {
-        Cache::forget('collections.all');
 
         $validator = Validator::make(['id' => $id], [
             'id' => ['nullable', 'exists:collections,id'],
