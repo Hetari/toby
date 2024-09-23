@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class BaseRepository
 {
@@ -21,13 +22,18 @@ class BaseRepository
      */
     public function all(array $relations = null)
     {
+        $user_id = Auth::guard('api')->user()->id ? Auth::guard('api')->user()->id : Auth::id();
+
         // Convert single string to an array
         if (is_string($relations)) {
             $relations = [$relations];
         }
 
         if ($relations) {
-            return $this->model->with($relations)->get();
+            return $this->model
+                ->with($relations)
+                ->where('user_id', $user_id)
+                ->get();
         }
 
         return $this->model->get();
@@ -42,7 +48,12 @@ class BaseRepository
      */
     public function find($id, array $relations = null)
     {
-        return $this->model->with($relations ?? [])->findOrFail($id);
+        $user_id = Auth::guard('api')->user()->id ? Auth::guard('api')->user()->id : Auth::id();
+
+        return $this->model
+            ->with($relations ?? [])
+            ->where('user_id', $user_id)
+            ->findOrFail($id);
     }
 
     public function create(array $data)
