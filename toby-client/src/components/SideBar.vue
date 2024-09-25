@@ -1,12 +1,11 @@
 <template>
 
-    <!-- TODO: add tawindcss pritter plugin -->
     <div class="py-[16px] col-span-1 columns-sm content-between grid border-x border-y border-rgbgray  h-screen bg-primary">
         <div class="">
             <div class=" flex justify-center cursor-pointer my-2">
                 <img src="../assets/vue.svg" alt="" class="size-10">
             </div>
-            <div class="flex justify-center pt-4 hover:text-pink-500">
+            <div class="flex justify-center pt-4 hover:text-pink-500 cursor-pointer">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="chakra-icon css-48tmls size-9" focusable="false"><path d="M12 5l0 14"></path><path d="M5 12l14 0"></path></svg>
             </div>
         </div>
