@@ -21,3 +21,4 @@ require base_path('routes/authRoutes.php');
 require base_path('routes/collectionRoutes.php');
 // });
 Route::resource('tabs', TabController::class);
+Route::resource('tags', TagController::class);
