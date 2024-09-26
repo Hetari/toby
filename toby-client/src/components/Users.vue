@@ -10,7 +10,7 @@
           :click="goToUserInfo()"
           >Ammar</a
         >
-        <button class="hover:text-pink-500">
+        <button @click="toggleShow" class="hover:text-pink-500">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"
@@ -211,7 +211,7 @@
 </template>
 
 <script setup lang="ts">
+  import { toggleShow } from '.';
+
   const goToUserInfo = () => {};
 </script>
-
-<style scoped></style>

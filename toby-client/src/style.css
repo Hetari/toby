@@ -3,15 +3,14 @@
 @tailwind utilities;
 
 @layer base {
-    body {
-        @apply bg-[#1E1E26] text-[#C5C5D3];
-    }
-    input {
-        @apply text-black font-medium p-3;
-       }
+  body {
+    @apply bg-[#1E1E26] text-[#C5C5D3];
+  }
+  input {
+    @apply p-3 font-medium text-black;
+  }
 
-    .flex-center {
-        @apply flex items-center justify-center;
-      }
-    
+  .flex-center {
+    @apply flex items-center justify-center;
+  }
 }

@@ -1,6 +1,6 @@
 <template>
   <div
-    class="col-span-rest content-between border-x border-y border-rgbgray bg-primary"
+    class="col-span-16 lg:col-span-19 content-between border-x border-y border-rgbgray bg-primary"
   >
     <div class="flex w-full flex-col">
       <!-- Header Section -->
@@ -251,13 +251,3 @@
   };
 </script>
 
-<style scoped>
-  .col-span-rest {
-    grid-column: span 16 / span 16;
-  }
-  @media (min-width: 1024px) {
-    .col-span-rest {
-      grid-column: span 19 / span 19;
-    }
-  }
-</style>

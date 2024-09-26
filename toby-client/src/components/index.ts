@@ -1,5 +1,7 @@
-import Collections from "./Collections.vue";
+import Collections from './Collections.vue';
 import sideBar from './SideBar.vue';
-import Users from "./Users.vue";
+import Users from './Users.vue';
 
-export { Collections, sideBar, Users }
+const toggleShow = () => {};
+
+export { Collections, sideBar, Users, toggleShow };
