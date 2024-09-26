@@ -6,6 +6,10 @@
     body {
         @apply bg-[#1E1E26] text-[#C5C5D3];
     }
+    input {
+        @apply text-black font-medium p-3;
+       }
+
     .flex-center {
         @apply flex items-center justify-center;
       }
