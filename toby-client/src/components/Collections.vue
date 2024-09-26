@@ -1,6 +1,7 @@
 <template>
   <div
-    class="col-span-16 lg:col-span-19 content-between border-x border-y border-rgbgray bg-primary"
+    class="content-between border-x border-y border-rgbgray bg-primary"
+    :class="collectionsGrid"
   >
     <div class="flex w-full flex-col">
       <!-- Header Section -->
@@ -193,6 +194,7 @@
 
 <script setup lang="ts">
   import { ref } from 'vue';
+  import { collectionsGrid } from '.';
 
   const collections = ref<{ name: string; starred: boolean; tags: string[] }[]>(
     [],
@@ -250,4 +252,3 @@
     dropdownIndex.value = null;
   };
 </script>
-

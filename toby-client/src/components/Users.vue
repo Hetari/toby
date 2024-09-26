@@ -1,6 +1,7 @@
 <template>
   <div
-    class="col-span-6 grid content-between border-y border-rgbgray bg-primary lg:col-span-4"
+    class="grid content-between border-y border-rgbgray bg-primary"
+    :class="userGrid"
   >
     <div class="flex w-full flex-col">
       <!-- TODO: <a> to user account -->
@@ -211,7 +212,7 @@
 </template>
 
 <script setup lang="ts">
-  import { toggleShow } from '.';
+  import { toggleShow, userGrid } from '.';
 
   const goToUserInfo = () => {};
 </script>

@@ -1,6 +1,7 @@
 <template>
   <div
-    class="col-span-2 grid h-screen columns-sm content-between border-x border-y border-rgbgray bg-primary py-[16px] lg:col-span-1"
+    class="grid h-screen columns-sm content-between border-x border-y border-rgbgray bg-primary py-[16px]"
+    :class="sideBarGrid"
   >
     <div class="">
       <div class="my-2 flex cursor-pointer justify-center">
@@ -83,4 +84,6 @@
   </div>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+  import { sideBarGrid } from '.';
+</script>

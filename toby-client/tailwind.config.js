@@ -8,6 +8,7 @@ export default {
         primary: '#232323232',
       },
       gridColumn: {
+        'span-0': 'span 0 / span 0',
         'span-13': 'span 13 / span 13',
         'span-14': 'span 14 / span 14',
         'span-15': 'span 15 / span 15',
@@ -22,6 +23,7 @@ export default {
         'span-24': 'span 24 / span 24',
       },
       gridRow: {
+        'span-0': 'span 0 / span 0',
         'span-13': 'span 13 / span 13',
         'span-14': 'span 14 / span 14',
         'span-15': 'span 15 / span 15',
@@ -36,6 +38,7 @@ export default {
         'span-24': 'span 24 / span 24',
       },
       gridColumnStart: {
+        0: '0',
         13: '13',
         14: '14',
         15: '15',
@@ -50,6 +53,7 @@ export default {
         24: '24',
       },
       gridRowStart: {
+        0: '0',
         13: '13',
         14: '14',
         15: '15',
@@ -64,6 +68,7 @@ export default {
         24: '24',
       },
       gridColumnEnd: {
+        0: '0',
         13: '13',
         14: '14',
         15: '15',
@@ -78,6 +83,7 @@ export default {
         24: '24',
       },
       gridRowEnd: {
+        0: '0',
         13: '13',
         14: '14',
         15: '15',
@@ -92,6 +98,7 @@ export default {
         24: '24',
       },
       gridTemplateColumns: {
+        0: 'repeat(0, minmax(0, 1fr))',
         13: 'repeat(13, minmax(0, 1fr))',
         14: 'repeat(14, minmax(0, 1fr))',
         15: 'repeat(15, minmax(0, 1fr))',
@@ -106,6 +113,7 @@ export default {
         24: 'repeat(24, minmax(0, 1fr))',
       },
       gridTemplateRows: {
+        0: 'repeat(0, minmax(0, 1fr))',
         13: 'repeat(13, minmax(0, 1fr))',
         14: 'repeat(14, minmax(0, 1fr))',
         15: 'repeat(15, minmax(0, 1fr))',
