@@ -9,5 +9,5 @@
 </template>
 
 <script setup>
-  import { Collections, sideBar, Users } from '../components';
+  import { Collections, sideBar, Users } from '../sections';
 </script>
