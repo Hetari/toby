@@ -20,7 +20,11 @@ class CollectionService
 
     public function getAllCollections($relations)
     {
-        return $this->cacheCollectionRepository->all($relations);
+        $userId = Auth::guard('api')->user()->id ? Auth::guard('api')->user()->id : Auth::id();
+
+        // اجلب الكولكشنز التي أنشأها المستخدم الحالي فقط
+        // dd($userId);
+        return $this->cacheCollectionRepository->all(['tabs', 'tags'])->where('user_id', $userId);
     }
 
     public function getCollectionById($id, $relations)

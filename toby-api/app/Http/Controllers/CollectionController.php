@@ -23,7 +23,6 @@ class CollectionController extends Controller
 
     public function index(string $id = null, array $relations = ['tabs', 'tags'])
     {
-
         $validator = Validator::make(['id' => $id], [
             'id' => ['nullable', 'exists:collections,id'],
         ]);
@@ -65,6 +64,7 @@ class CollectionController extends Controller
         $validator = Validator::make($request->all(), [
             'title' => ['required', 'string', 'max:255'],
             'is_fav' => ['nullable', 'boolean'],
+            'tag_id' => ['nullable', 'exists:tags,id'],
             'description' => ['nullable', 'string'],
         ]);
 
@@ -98,6 +98,7 @@ class CollectionController extends Controller
         $validator = Validator::make($request->all(), [
             'title' => ['required', 'string', 'max:255'],
             'is_fav' => ['nullable', 'boolean'],
+            'tag_id' => ['nullable', 'exists:tags,id'],
             'description' => ['nullable', 'string'],
         ]);
         if ($validator->fails()) {
