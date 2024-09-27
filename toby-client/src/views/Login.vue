@@ -1,5 +1,7 @@
 <template>
-  <div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
+  <div
+    class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8 bg-white"
+  >
     <div class="sm:mx-auto sm:w-full sm:max-w-sm">
       <img
         class="mx-auto h-10 w-auto"
@@ -149,5 +151,3 @@ export default {
   },
 };
 </script>
-
-<style></style>
