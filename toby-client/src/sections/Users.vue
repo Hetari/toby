@@ -4,14 +4,14 @@
     :class="userGrid"
   >
     <div class="flex w-full flex-col">
-      <!-- TODO: <a> to user account -->
+      <!-- Header with User Info and Toggle -->
       <div class="flex w-full justify-between px-2 pb-4 pr-4 pt-4">
         <a
           class="cursor-pointer pl-2 text-2xl font-medium"
-          :click="goToUserInfo()"
-          >Ammar</a
-        >
+          @click="goToUserInfo()"
+        >Ammar</a>
         <button @click="toggleShow" class="hover:text-pink-500">
+          <!-- SVG Icon for Toggle -->
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"
@@ -34,8 +34,11 @@
         </button>
       </div>
 
+      <!-- Search section with click event -->
       <div
         class="flex cursor-pointer space-x-2 border-b border-t border-rgbgray p-6 hover:text-pink-500"
+        @click="toggleSearchPopup" 
+        
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -56,6 +59,7 @@
         <p class="text-xl opacity-90">Search</p>
       </div>
 
+      <!-- Other content like Spaces, Links, etc. -->
       <div class="grid border-b border-rgbgray p-4 text-xl">
         <div
           class="flex cursor-pointer space-x-3 pb-4 pt-2 font-light hover:text-pink-500"
@@ -108,6 +112,7 @@
         </div>
       </div>
 
+      <!-- Spaces Section with "Starred Collections" and "My Collections" -->
       <div class="p-2 pt-4">
         <p class="pb-6 pl-3 pt-2 text-xl font-medium">Spaces</p>
 
@@ -160,6 +165,23 @@
       </div>
     </div>
 
+    <!-- Popup Modal for Search -->
+    <div v-if="showSearchPopup" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+      <div class="bg-white p-6 rounded-lg shadow-lg w-1/3 relative">
+        <h2 class="text-2xl font-bold mb-4 text-black">Search</h2>
+        <input
+          type="text"
+          placeholder="Type to search..."
+          class="block w-full rounded-md border-0 py-1.5 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+        />
+        <div class="flex justify-end mt-4">
+          <button @click="toggleSearchPopup" class="absolute top-4 right-4 text-gray-500 hover:text-gray-700 text-3xl">
+            &times;
+          </button>
+        </div>
+      </div>
+    </div>
+
     <div class="border-t border-rgbgray pb-4 pl-1 pt-3 font-light">
       <div
         class="flex cursor-pointer space-x-2 p-2 pt-2 opacity-90 hover:text-pink-500"
@@ -208,11 +230,25 @@
         <div>Organization settings</div>
       </div>
     </div>
+
   </div>
 </template>
 
 <script setup lang="ts">
-  import { toggleShow, userGrid } from '.';
+import { toggleShow, userGrid } from '.';
+import { ref } from 'vue'
 
-  const goToUserInfo = () => {};
+
+const showSearchPopup = ref(false) // Ref to control popup visibility
+
+
+const goToUserInfo = () => {
+
+}
+
+const toggleSearchPopup = () => {
+  showSearchPopup.value = !showSearchPopup.value // Toggle the popup visibility
+}
 </script>
+
+
