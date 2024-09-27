@@ -20,5 +20,3 @@ onMounted(() => {
     <router-view />
   </main>
 </template>
-
-<style scoped></style>

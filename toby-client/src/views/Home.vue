@@ -1,20 +1,13 @@
 <template>
-  <div class="grid grid-cols-24">
-     <sideBar/>
+  <div class="grid-cols-24 grid h-screen">
+    <sideBar />
 
-     <Users />
+    <Users />
 
-     <Collections />
-   </div>
+    <Collections />
+  </div>
 </template>
 
 <script setup>
-import { Collections, sideBar, Users } from '../components'
+  import { Collections, sideBar, Users } from '../sections';
 </script>
-
-<style>
-/* make it smaller */
-.grid-cols-24 {
-  grid-template-columns: repeat(24, minmax(0, 1fr));
-}
-</style>
