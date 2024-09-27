@@ -1,14 +1,14 @@
 <template>
-  <div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
+  <div
+    class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8 bg-white"
+  >
     <div class="sm:mx-auto sm:w-full sm:max-w-sm">
       <img
         class="mx-auto h-10 w-auto"
         src="../assets/tobyicon.png"
         alt="Your Company"
       />
-      <h2
-        class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight"
-      >
+      <h2 class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight">
         Sign in to your account
       </h2>
     </div>
@@ -16,9 +16,7 @@
     <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
       <form @submit.prevent="loginUser" class="space-y-6">
         <div>
-          <label
-            for="email"
-            class="block text-sm font-medium leading-6"
+          <label for="email" class="block text-sm font-medium leading-6"
             >Email address</label
           >
           <div class="mt-2">
@@ -36,9 +34,7 @@
 
         <div>
           <div class="flex items-center justify-between">
-            <label
-              for="password"
-              class="block text-sm font-medium leading-6"
+            <label for="password" class="block text-sm font-medium leading-6"
               >Password</label
             >
           </div>
