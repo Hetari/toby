@@ -1,16 +1,15 @@
 <template>
   <div
-    class="content-between border-x border-y border-rgbgray bg-primary"
-    :class="collectionsGrid"
+    class="col-span-19 bg-primary content-between border-x border-y border-rgbgray"
   >
-    <div class="flex w-full flex-col">
+    <div class="flex flex-col w-full">
       <!-- Header Section -->
       <div
-        class="flex w-full justify-between border-b border-rgbgray px-2 pb-4 pr-4 pt-4"
+        class="flex justify-between w-full pt-4 px-2 pb-4 pr-4 border-b border-rgbgray"
       >
-        <p class="pl-2 text-2xl">
+        <p class="text-2xl pl-2">
           My Collections
-          <span class="pl-1 text-sm font-light text-[#7C7C9A]"> | </span>
+          <span class="text-sm pl-1 font-light text-[#7C7C9A]"> | </span>
           <span class="text-sm font-light">{{ collections.length }}</span>
           <span class="text-sm font-light"> collections</span>
         </p>
@@ -37,9 +36,9 @@
       </div>
 
       <!-- Add Collection Button -->
-      <div class="flex place-content-end border-b border-rgbgray p-[19.2px]">
+      <div class="p-[19.2px] place-content-end flex border-b border-rgbgray">
         <button
-          class="cursor-pointer rounded-md border border-pink-600 bg-pink-600 px-6 py-1 font-semibold hover:opacity-80"
+          class="border rounded-md py-1 px-6 hover:opacity-80 bg-pink-600 border-pink-600 font-semibold cursor-pointer"
           @click="togglePopup('add')"
         >
           <span class="text-xl">+</span> ADD COLLECTION
@@ -56,16 +55,16 @@
             <div
               v-for="(collection, index) in collections"
               :key="index"
-              class="relative mb-4 w-full rounded-lg border border-rgbgray p-4 shadow"
+              class="border-rgbgray border rounded-lg shadow p-4 mb-4 w-full relative"
             >
-              <div class="flex items-center justify-between">
+              <div class="flex justify-between items-center">
                 <div class="flex items-center">
-                  <h3 class="text-xl font-semibold">{{ collection.name }}</h3>
+                  <h3 class="text-xl font-semibold">{{ collection.title }}</h3>
                   <!-- Show star icon when collection is starred -->
                   <svg
-                    v-if="collection.starred"
+                    v-if="collection.is_fav"
                     xmlns="http://www.w3.org/2000/svg"
-                    class="ml-2 h-6 w-6 text-yellow-500"
+                    class="w-6 h-6 ml-2 text-yellow-500"
                     fill="currentColor"
                     viewBox="0 0 24 24"
                     stroke="none"
@@ -89,30 +88,30 @@
                   <!-- Dropdown menu -->
                   <div
                     v-if="dropdownIndex === index"
-                    class="absolute right-0 z-20 mt-2 w-48 rounded-md border border-gray-200 bg-[#414150] shadow-lg"
+                    class="absolute right-0 mt-2 w-48 bg-[#414150] border border-gray-200 rounded-md shadow-lg z-20"
                   >
                     <ul>
                       <li
                         @click="toggleStar(index)"
-                        class="cursor-pointer px-4 py-2 hover:bg-[#4c4c5c]"
+                        class="px-4 py-2 hover:bg-[#4c4c5c] cursor-pointer"
                       >
-                        {{ collection.starred ? 'Unstar' : 'Star' }}
+                        {{ collection.is_fav ? "Unstar" : "Star" }}
                       </li>
                       <li
-                        @click="togglePopup('edit', index)"
-                        class="cursor-pointer px-4 py-2 hover:bg-[#4c4c5c]"
+                        @click="togglePopup('edit', collection.id)"
+                        class="px-4 py-2 hover:bg-[#4c4c5c] cursor-pointer"
                       >
                         Edit
                       </li>
                       <li
-                        @click="togglePopup('tag', index)"
-                        class="cursor-pointer px-4 py-2 hover:bg-[#4c4c5c]"
+                        @click="togglePopup('tag', collection.id)"
+                        class="px-4 py-2 hover:bg-[#4c4c5c] cursor-pointer"
                       >
                         Add Tag
                       </li>
                       <li
-                        @click="deleteCollection(index)"
-                        class="cursor-pointer px-4 py-2 text-red-500 hover:bg-[#4c4c5c]"
+                        @click="deleteCollection(collection.id)"
+                        class="px-4 py-2 hover:bg-[#4c4c5c] cursor-pointer text-red-500"
                       >
                         Delete
                       </li>
@@ -127,7 +126,7 @@
                   v-if="collection.tags.length > 0"
                   v-for="(tag, idx) in collection.tags"
                   :key="idx"
-                  class="mr-2 inline-block rounded px-2 py-1 text-sm"
+                  class="inline-block text-sm px-2 py-1 rounded mr-2"
                 >
                   {{ tag }}
                 </span>
@@ -141,21 +140,21 @@
     <!-- Popup for add/edit/tag collection -->
     <div
       v-if="showPopup"
-      class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+      class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
     >
-      <div class="relative w-96 rounded-lg bg-white p-10 text-center shadow-xl">
-        <h2 class="mb-4 text-2xl font-semibold text-black">
+      <div class="bg-white rounded-lg shadow-xl p-10 w-96 text-center relative">
+        <h2 class="text-2xl font-semibold mb-4 text-black">
           {{
-            popupMode === 'add'
-              ? 'Add New Collection'
-              : popupMode === 'edit'
-                ? 'Edit Collection'
-                : 'Add Tag'
+            popupMode === "add"
+              ? "Add New Collection"
+              : popupMode === "edit"
+              ? "Edit Collection"
+              : "Add Tag"
           }}
         </h2>
         <button
           @click="togglePopup()"
-          class="absolute right-4 top-4 text-3xl text-gray-500 hover:text-gray-700"
+          class="absolute top-4 right-4 text-gray-500 hover:text-gray-700 text-3xl"
         >
           &times;
         </button>
@@ -164,27 +163,27 @@
         <input
           v-model="popupInput"
           type="text"
-          class="mb-4 w-full rounded-md border border-gray-300 px-3 py-2 text-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
+          class="border border-gray-300 rounded-md w-full py-2 px-3 mb-4 text-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
           :placeholder="
             popupMode === 'add'
               ? 'Enter collection name'
               : popupMode === 'edit'
-                ? 'Edit collection name'
-                : 'Enter tag'
+              ? 'Edit collection name'
+              : 'Enter tag'
           "
         />
 
         <!-- Button to submit form -->
         <button
           @click="submitPopup"
-          class="rounded bg-pink-600 px-4 py-2 font-semibold text-white hover:bg-pink-700"
+          class="bg-pink-600 text-white font-semibold py-2 px-4 rounded hover:bg-pink-700"
         >
           {{
-            popupMode === 'add'
-              ? 'Add Collection'
-              : popupMode === 'edit'
-                ? 'Save Changes'
-                : 'Add Tag'
+            popupMode === "add"
+              ? "Add Collection"
+              : popupMode === "edit"
+              ? "Save Changes"
+              : "Add Tag"
           }}
         </button>
       </div>
@@ -193,62 +192,141 @@
 </template>
 
 <script setup lang="ts">
-  import { ref } from 'vue';
-  import { collectionsGrid } from '.';
+import { onMounted, ref } from "vue";
+import axios from "axios";
 
-  const collections = ref<{ name: string; starred: boolean; tags: string[] }[]>(
-    [],
-  );
-  const showPopup = ref(false);
-  const popupMode = ref<string>('');
-  const popupInput = ref<string>('');
-  const currentEditIndex = ref<number | null>(null);
-  const dropdownIndex = ref<number | null>(null);
+const collections = ref<{ name: string; starred: boolean; tags: string[] }[]>(
+  []
+);
+const showPopup = ref(false);
+const popupMode = ref<string>("");
+const popupInput = ref<string>("");
+const currentEditIndex = ref<number | null>(null);
+const dropdownIndex = ref<number | null>(null);
 
-  const togglePopup = (mode: string = '', index: number | null = null) => {
-    showPopup.value = !showPopup.value;
-    popupMode.value = mode;
-    currentEditIndex.value = index;
-    popupInput.value =
-      mode === 'edit' && index !== null ? collections.value[index].name : '';
-  };
-
-  const submitPopup = () => {
-    if (popupMode.value === 'add' && popupInput.value.trim()) {
-      collections.value.push({
-        name: popupInput.value.trim(),
-        starred: false,
-        tags: [],
-      });
-    } else if (
-      popupMode.value === 'edit' &&
-      currentEditIndex.value !== null &&
-      popupInput.value.trim()
-    ) {
-      collections.value[currentEditIndex.value].name = popupInput.value.trim();
-    } else if (
-      popupMode.value === 'tag' &&
-      currentEditIndex.value !== null &&
-      popupInput.value.trim()
-    ) {
-      collections.value[currentEditIndex.value].tags.push(
-        popupInput.value.trim(),
+const togglePopup = (mode: string = "", index: number | null = null) => {
+  showPopup.value = !showPopup.value;
+  popupMode.value = mode;
+  currentEditIndex.value = index;
+  popupInput.value =
+    mode === "edit" && index !== null ? collections.value[index].name : "";
+};
+const submitPopup = async () => {
+  if (popupMode.value === "add" && popupInput.value.trim()) {
+    try {
+      // Send a POST request to add the new collection
+      await axios.post(
+        "http://localhost:8000/api/collections",
+        {
+          title: popupInput.value.trim(),
+          is_fav: false,
+          description: "New collection description", // Add other fields if necessary
+        },
+        {
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + localStorage.getItem("accessToken"),
+          },
+        }
       );
+
+      // Refetch collections from the server after adding
+      await fetchCollections();
+    } catch (error) {
+      console.error("Error adding new collection:", error);
     }
-    togglePopup();
-  };
+  } else if (
+    popupMode.value === "edit" &&
+    currentEditIndex.value !== null &&
+    popupInput.value.trim()
+  ) {
+    const collectionId = collections.value[currentEditIndex.value].id; // Get the collection ID
+    try {
+      // Send a PUT request to update the collection
+      await axios.put(
+        `http://localhost:8000/api/collections/${collectionId}`,
+        {
+          title: popupInput.value.trim(),
+          is_fav: collections.value[currentEditIndex.value].is_fav,
+          description: "Updated description", // Add other fields if necessary
+        },
+        {
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + localStorage.getItem("accessToken"),
+          },
+        }
+      );
 
-  const toggleDropdown = (index: number) => {
-    dropdownIndex.value = dropdownIndex.value === index ? null : index;
-  };
+      // Refetch collections from the server after the update
+      await fetchCollections();
+    } catch (error) {
+      console.error("Error updating collection:", error);
+    }
+  } else if (
+    popupMode.value === "tag" &&
+    currentEditIndex.value !== null &&
+    popupInput.value.trim()
+  ) {
+    collections.value[currentEditIndex.value].tags.push(
+      popupInput.value.trim()
+    );
+  }
+  togglePopup();
+};
 
-  const toggleStar = (index: number) => {
-    collections.value[index].starred = !collections.value[index].starred;
-    dropdownIndex.value = null;
-  };
+const toggleDropdown = (index) => {
+  dropdownIndex.value = dropdownIndex.value === index ? null : index;
+};
 
-  const deleteCollection = (index: number) => {
-    collections.value.splice(index, 1);
-    dropdownIndex.value = null;
-  };
+const toggleStar = (index) => {
+  collections.value[index].is_fav = !collections.value[index].is_fav;
+  dropdownIndex.value = null;
+};
+
+const deleteCollection = async (id: number) => {
+  try {
+    // Send a DELETE request to delete the collection
+    await axios.delete(`http://localhost:8000/api/collections/${id}`, {
+      headers: {
+        Accept: "application/json",
+        Authorization: "Bearer " + localStorage.getItem("accessToken"),
+      },
+    });
+
+    // Refetch collections from the server after deletion
+    await fetchCollections();
+  } catch (error) {
+    console.error("Error deleting collection:", error);
+  }
+
+  dropdownIndex.value = null; // Close the dropdown after deletion
+};
+
+const fetchCollections = async () => {
+  try {
+    const response = await axios.get("http://localhost:8000/api/collections", {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + localStorage.getItem("accessToken"),
+      },
+    });
+    collections.value = response.data.data;
+  } catch (error) {
+    console.error("Error fetching collections:", error);
+  }
+};
+
+onMounted(() => {
+  fetchCollections(); // Fetch collections when the component is mounted
+});
 </script>
+
+<style scoped>
+.col-span-19 {
+  grid-column: span 19 / span 19;
+}
+</style>
