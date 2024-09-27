@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Tab;
 use App\Services\TabService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -141,8 +142,9 @@ class TabController extends Controller
             ], Response::HTTP_NOT_FOUND);
         }
 
-        $result = $this->tabService->deleteTab($id);
-        if ($result instanceof \Illuminate\Http\JsonResponse) {
+        // $result = $this->tabService->deleteTab($id);
+        $result = Tab::findOrFail($id)->delete();
+        if (!$result) {
             return $result;
         }
 
