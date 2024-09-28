@@ -1,6 +1,6 @@
 <template>
   <div
-    class="col-span-19 bg-primary content-between border-x border-y border-rgbgray"
+    class="col-span-14 bg-primary content-between border-x border-y border-rgbgray"
   >
     <div class="flex flex-col w-full">
       <!-- Header Section -->
@@ -104,7 +104,7 @@
                         Edit
                       </li>
                       <li
-                        @click="togglePopup('tag', collection.id)"
+                        @click="showTagForm(collection.id)"
                         class="px-4 py-2 hover:bg-[#4c4c5c] cursor-pointer"
                       >
                         Add Tag
@@ -119,7 +119,6 @@
                   </div>
                 </div>
               </div>
-
               <!-- Tags display -->
               <div class="mt-2">
                 <span
@@ -128,11 +127,33 @@
                   :key="idx"
                   class="inline-block text-sm px-2 py-1 rounded mr-2"
                 >
-                  {{ tag }}
+                  #{{ tag }}
                 </span>
               </div>
             </div>
           </div>
+        </div>
+      </div>
+      <!-- Modal -->
+      <div v-if="isTagFormVisible" class="modal bg-white p-3 text-black">
+        <div class="modal-content">
+          <span class="close" @click="closeModal">&times;</span>
+
+          <h2 cl>Add a Tag</h2>
+
+          <!-- Form -->
+          <form @submit.prevent="submitTag">
+            <input
+              type="text"
+              class="flex rounded-sm border-1 border-black border-solid bg-gray-300"
+              v-model="form.title"
+              placeholder="Enter tag title"
+              required
+            />
+
+            <!-- Submit Button -->
+            <button type="submit">Submit</button>
+          </form>
         </div>
       </div>
     </div>
@@ -210,6 +231,47 @@ const togglePopup = (mode: string = "", index: number | null = null) => {
   currentEditIndex.value = index;
   popupInput.value =
     mode === "edit" && index !== null ? collections.value[index].name : "";
+};
+
+// Reactive data
+const isTagFormVisible = ref(false);
+const form = ref({
+  collection_id: null,
+  title: "",
+});
+
+// Methods
+const showTagForm = (collectionId) => {
+  form.value.collection_id = collectionId; // Set the default collection_id
+  isTagFormVisible.value = true; // Show the form modal
+};
+
+const closeModal = () => {
+  isTagFormVisible.value = false; // Close the modal
+};
+
+const submitTag = async () => {
+  try {
+    await axios.post(
+      "http://localhost:8000/api/tags",
+      {
+        title: form.value.title,
+        collection_id: form.value.collection_id,
+      },
+      {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + localStorage.getItem("accessToken"),
+        },
+      }
+    );
+
+    closeModal(); // Close the modal after success
+    fetchCollections(); // Optionally refetch collections or update the state
+  } catch (error) {
+    console.error("Error adding tag:", error);
+  }
 };
 const submitPopup = async () => {
   if (popupMode.value === "add" && popupInput.value.trim()) {
@@ -325,8 +387,23 @@ onMounted(() => {
 });
 </script>
 
-<style scoped>
-.col-span-19 {
-  grid-column: span 19 / span 19;
+<style>
+/* Basic modal styling */
+.modal {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.close {
+  cursor: pointer;
+  float: right;
+  font-size: 20px;
 }
 </style>
