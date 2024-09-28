@@ -18,7 +18,9 @@ require base_path('routes/authRoutes.php');
 // Route::middleware(['isAuthenticated'])->group(function () {
 // require base_path('routes/tagRoutes.php');
 // require base_path('routes/tabRoutes.php');
-require base_path('routes/collectionRoutes.php');
 // });
-Route::resource('tabs', TabController::class);
-Route::resource('tags', TagController::class);
+// Route::resource('tabs', TabController::class);
+// Route::resource('tags', TagController::class);
+require base_path('routes/collectionRoutes.php');
+require base_path('routes/tabRoutes.php');
+require base_path('routes/tagRoutes.php');

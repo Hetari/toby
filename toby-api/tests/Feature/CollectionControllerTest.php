@@ -31,14 +31,14 @@ class CollectionControllerTest extends TestCase
     public function it_can_retrieve_all_collections()
     {
         $response = $this->actingAs($this->user)->getJson('/api/collections');
-        $response->assertStatus(200);
+        $response->assertStatus(Response::HTTP_OK);
     }
 
     #[Test]
     public function it_can_retrieve_a_single_collection_by_id()
     {
         $response = $this->actingAs($this->user)->getJson("/api/collections/{$this->collection->id}");
-        $response->assertStatus(200);
+        $response->assertStatus(Response::HTTP_OK);
     }
 
     #[Test]
@@ -68,7 +68,7 @@ class CollectionControllerTest extends TestCase
             'is_fav' => true,
         ]);
 
-        $response->assertStatus(200);
+        $response->assertStatus(Response::HTTP_OK);
 
         $this->assertDatabaseHas('collections', [
             'id' => $this->collection->id,
