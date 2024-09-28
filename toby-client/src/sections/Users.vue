@@ -169,15 +169,53 @@
     <div v-if="showSearchPopup" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
       <div class="bg-white p-6 rounded-lg shadow-lg w-1/3 relative">
         <h2 class="text-2xl font-bold mb-4 text-black">Search</h2>
+
+        <!-- Buttons for Search Type Selection -->
+        <div class="flex justify-between mb-4">
+          <button 
+            @click="searchType = 'collections'"
+            :class="{'bg-indigo-500': searchType === 'collections'}"
+            class="px-4 py-2 bg-pink-500 rounded-md">
+            Collections
+          </button>
+          <button 
+            @click="searchType = 'tags'"
+            :class="{'bg-indigo-500': searchType === 'tags'}"
+            class="px-4 py-2 bg-pink-500 rounded-md">
+            Tags
+          </button>
+        </div>
+
+        <!-- Input for search query -->
         <input
           type="text"
+          v-model="searchQuery"
           placeholder="Type to search..."
           class="block w-full rounded-md border-0 py-1.5 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
         />
+
         <div class="flex justify-end mt-4">
+          <button @click="executeSearch" class="px-4 py-2 bg-pink-600 text-white rounded-md">
+            Search
+          </button>
           <button @click="toggleSearchPopup" class="absolute top-4 right-4 text-gray-500 hover:text-gray-700 text-3xl">
             &times;
           </button>
+        </div>
+
+        <!-- Search result section -->
+        <div v-if="showSearchResults" class="mt-6">
+          <h3 class="text-xl font-semibold">Search Results:</h3>
+          <div v-if="searchResults.length > 0">
+            <!-- Display the results -->
+            <ul>
+              <li v-for="(result, index) in searchResults" :key="index">{{ result }}</li>
+            </ul>
+          </div>
+          <div v-else>
+            <!-- Display no data found message -->
+            <p>No data found.</p>
+          </div>
         </div>
       </div>
     </div>
@@ -229,26 +267,55 @@
         </svg>
         <div>Organization settings</div>
       </div>
-    </div>
+    
 
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { toggleShow, userGrid } from '.';
 import { ref } from 'vue'
+import { toggleShow, userGrid } from '.';
 
-
-const showSearchPopup = ref(false) // Ref to control popup visibility
-
+const showSearchPopup = ref(false)
+const searchType = ref<'collections' | 'tags'>('collections') // Track search type
+const searchQuery = ref('') // Track the input query
+const searchResults = ref<string[]>([]) // Track the search results
+const showSearchResults = ref(false) // To toggle between input and results
 
 const goToUserInfo = () => {
-
+  // Existing function
 }
 
 const toggleSearchPopup = () => {
   showSearchPopup.value = !showSearchPopup.value // Toggle the popup visibility
+  showSearchResults.value = false // Reset results view on close
+  searchQuery.value = '' // Reset search query
+}
+
+const executeSearch = () => {
+  // Mock search data
+  const mockCollections = ['Collection 1', 'Collection 2', 'Collection 3']
+  const mockTags = ['Tag 1', 'Tag 2', 'Tag 3']
+
+  // Clear previous results
+  searchResults.value = []
+
+  if (searchType.value === 'collections') {
+    searchResults.value = mockCollections.filter(c =>
+      c.toLowerCase().includes(searchQuery.value.toLowerCase())
+    )
+  } else if (searchType.value === 'tags') {
+    searchResults.value = mockTags.filter(t =>
+      t.toLowerCase().includes(searchQuery.value.toLowerCase())
+    )
+  }
+
+  // Check if no results found
+  if (searchResults.value.length === 0) {
+    searchResults.value = ['No data found.']
+  }
+
+  showSearchResults.value = true
 }
 </script>
-
-
