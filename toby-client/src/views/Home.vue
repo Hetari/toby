@@ -5,9 +5,10 @@
     <Users />
 
     <Collections />
+    <Tabs />
   </div>
 </template>
 
 <script setup>
-  import { Collections, sideBar, Users } from '../sections';
+import { Collections, sideBar, Users, Tabs } from "../sections";
 </script>

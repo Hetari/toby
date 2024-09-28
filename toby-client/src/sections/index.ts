@@ -1,16 +1,17 @@
-import { ref, watch } from 'vue';
-import Collections from './Collections.vue';
-import sideBar from './SideBar.vue';
-import Users from './Users.vue';
+import { ref, watch } from "vue";
+import Collections from "./Collections.vue";
+import sideBar from "./SideBar.vue";
+import Users from "./Users.vue";
+import Tabs from "./Tabs.vue";
 
 const isShow = ref(true);
-const sideBarGridShow = ref('col-span-2 lg:col-span-1');
-const collectionsGridShow = ref('col-span-16 lg:col-span-19');
-const userGridShow = ref('col-span-6 lg:col-span-4');
+const sideBarGridShow = ref("col-span-2 lg:col-span-1");
+const collectionsGridShow = ref("col-span-16 lg:col-span-19");
+const userGridShow = ref("col-span-6 lg:col-span-4");
 
-const sideBarGridHide = ref('col-span-0 -translate-x-full hidden');
-const collectionsGridHide = ref('col-span-19');
-const userGridHide = ref('col-span-5');
+const sideBarGridHide = ref("col-span-0 -translate-x-full hidden");
+const collectionsGridHide = ref("col-span-19");
+const userGridHide = ref("col-span-5");
 
 const sideBarGrid = ref(sideBarGridShow.value);
 const collectionsGrid = ref(collectionsGridShow.value);
@@ -48,4 +49,5 @@ export {
   collectionsGrid,
   sideBarGrid,
   userGrid,
+  Tabs,
 };
