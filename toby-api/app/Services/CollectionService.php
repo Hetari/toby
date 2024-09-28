@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class CollectionService
 {
+    // TODO: make the proxy pattern work as Dr. want
     protected $collectionRepository;
     protected $cacheCollectionRepository;
 
@@ -21,9 +22,6 @@ class CollectionService
     public function getAllCollections($relations)
     {
         $userId = Auth::guard('api')->user()->id ? Auth::guard('api')->user()->id : Auth::id();
-
-        // اجلب الكولكشنز التي أنشأها المستخدم الحالي فقط
-        // dd($userId);
         return $this->cacheCollectionRepository->all(['tabs', 'tags'])->where('user_id', $userId);
     }
 
